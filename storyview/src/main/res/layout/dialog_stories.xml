@@ -15,8 +15,8 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/storiesViewPager"
             android:layout_width="0dp"
-            android:background="#707070"
             android:layout_height="0dp"
+            android:background="#707070"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/storiesProgressView" />
 
-
         <TextView
             android:id="@+id/title_textView"
             android:layout_width="0dp"
@@ -67,9 +66,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="12sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/titleCardView"
             app:layout_constraintEnd_toEndOf="@+id/title_textView"
             app:layout_constraintStart_toEndOf="@+id/titleCardView"
@@ -81,9 +80,9 @@
             android:id="@+id/titleCardView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:visibility="gone"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             app:cardCornerRadius="25dp"
             app:cardPreventCornerOverlap="false"
             app:layout_constraintStart_toStartOf="parent"
@@ -95,9 +94,28 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside" />
-
-
         </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/moreIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:includeFontPadding="false"
+            android:text="@string/more"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:theme="@style/Theme.MaterialComponents.Light"
+            app:icon="@drawable/ic_baseline_more_horiz_24"
+            app:iconGravity="top"
+            app:iconPadding="8dp"
+            app:iconSize="24dp"
+            app:iconTint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
