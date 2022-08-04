@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import omari.hamza.storyview.StoryView;
-import omari.hamza.storyview.callback.OnStoryChangedCallback;
 import omari.hamza.storyview.callback.StoryClickListeners;
 import omari.hamza.storyview.model.MyStory;
 import omari.hamza.storyview.model.StoryTextFont;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             MyStory story1 = new MyStory(
                     StoryType.IMAGE,
-                    "https://media.pri.org/s3fs-public/styles/story_main/public/images/2019/09/092419-germany-climate.jpg?itok=P3FbPOp-",
+                    "https://i.picsum.photos/id/370/1920/1080.jpg?hmac=BX7F76Chb5YLvSLJJTwZUSAIIFgcJsJTvJ55QkUH40E",
                     simpleDateFormat.parse("20-10-2019 10:00:00")
             );
             myStories.add(story1);
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             MyStory story2 = new MyStory(
                     StoryType.IMAGE,
-                    "http://i.imgur.com/0BfsmUd.jpg",
+                    "https://i.picsum.photos/id/164/3840/2160.jpg?hmac=CWM12wwPFuBimhVAl7RT-A8PoZxPNkGsnzQQcI0mIJU",
                     simpleDateFormat.parse("26-10-2019 15:00:00"),
                     "#TEAM_STANNIS"
             );
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         MyStory story3 = new MyStory(
                 StoryType.IMAGE,
-                "https://mfiles.alphacoders.com/681/681242.jpg"
+                "https://i.picsum.photos/id/674/1920/1080.jpg?hmac=-Di2Z5ARQrYUoegBDpVrMOaU5eT5_bvjllHiea1lqEs"
         );
         myStories.add(story3);
 
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         MyStory story5 = new MyStory(
                 StoryType.TEXT,
-                "This is a text story",
+                "This is a text story1",
                 StoryTextFont.APP_ROBOTO_BOLD,
                 "#FF000000",
                 "#FFFFFFFF"
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         MyStory story6 = new MyStory(
                 StoryType.TEXT,
-                "This is a text story",
+                "This is a text story2",
                 Typeface.create("sans-serif-medium", Typeface.NORMAL),
                 "#FF000000",
                 "#FFFFFFFF"
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         MyStory story7 = new MyStory(
                 StoryType.TEXT,
-                "This is a text story",
+                "This is a text story3",
                 ResourcesCompat.getFont(this, R.font.cairo_bold),
                 "#FFD15C5C",
                 "#FFFFFFFF"
@@ -122,11 +121,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onTitleIconClickListener(int position) {
                     }
                 })
-                .setOnStoryChangedCallback(new OnStoryChangedCallback() {
-                    @Override
-                    public void storyChanged(int position) {
-                        Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_SHORT).show();
-                    }
+                .setOnStoryChangedCallback(position -> {
+//                    Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_SHORT).show();
                 })
                 .setStartingIndex(0)
                 .setRtl(true)

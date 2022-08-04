@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">StoryView</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
     <string name="more">More</string>
+    <string name="options">Options</string>
 </resources>

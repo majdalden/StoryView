@@ -47,4 +47,7 @@ dependencies {
 
     implementation "com.google.code.gson:gson:2.9.0"
 
+    implementation 'com.civitasv.iosLike:dialog:0.1.3'
+
+
 }

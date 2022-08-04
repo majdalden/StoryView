@@ -2,6 +2,7 @@ package omari.hamza.storyview;
 
 import static omari.hamza.storyview.utils.Utils.getDurationBetweenDates;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -27,13 +27,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.civitasv.ioslike.dialog.DialogBottom;
+import com.civitasv.ioslike.model.DialogTextStyle;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import omari.hamza.storyview.callback.OnMenuCancelListener;
-import omari.hamza.storyview.callback.OnPopupItemListener;
+import omari.hamza.storyview.callback.OnClickDeleteStoryListener;
 import omari.hamza.storyview.callback.OnStoryChangedCallback;
 import omari.hamza.storyview.callback.StoryCallbacks;
 import omari.hamza.storyview.callback.StoryClickListeners;
@@ -90,14 +91,16 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     private int width, height;
     private float xValue = 0, yValue = 0;
 
+    private ViewPagerAdapter viewPagerAdapter;
 
     private StoryClickListeners storyClickListeners;
     private OnStoryChangedCallback onStoryChangedCallback;
 
     private boolean isRtl;
 
-    private OnPopupItemListener onPopupItemListener;
-    private OnMenuCancelListener onMenuCancelListener;
+    private OnClickDeleteStoryListener onClickDeleteStoryListener;
+
+    private DialogBottom dialogBottom;
 
     private StoryView() {
     }
@@ -128,7 +131,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         storiesProgressView.setStoriesCount(storiesList.size());
         storiesProgressView.setStoryDuration(duration);
         updateHeading();
-        mViewPager.setAdapter(new ViewPagerAdapter(storiesList, getContext(), this));
+        viewPagerAdapter = new ViewPagerAdapter(storiesList, getContext(), this);
+        mViewPager.setAdapter(viewPagerAdapter);
     }
 
     private void readArguments() {
@@ -139,6 +143,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         isRtl = getArguments().getBoolean(IS_RTL_TAG, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setupViews(View view) {
         ((PullDismissLayout) view.findViewById(R.id.pull_dismiss_layout)).setListener(this);
         ((PullDismissLayout) view.findViewById(R.id.pull_dismiss_layout)).setmTouchCallbacks(this);
@@ -181,36 +186,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             storiesProgressView.setRotation(180);
         }
 
-//        registerForContextMenu(moreIV);
         moreIV.setOnClickListener(view1 -> {
-            Activity activity = getActivity();
-            if (activity == null) {
-                return;
-            }
-            PopupMenu popup = new PopupMenu(activity, view1);
-
-            if (onPopupItemListener != null) {
-                onPopupItemListener.onCreatePopupMenu(popup, view1);
-                return;
-            }
-
-            popup.getMenuInflater().inflate(R.menu.story_view_menu, popup.getMenu());
-
-            popup.setOnMenuItemClickListener(item -> {
-                if (onPopupItemListener != null) {
-                    return onPopupItemListener.onPopupItemSelected(item);
-                }
-                final int itemId = item.getItemId();
-                if (itemId == R.id.action_cancel) {
-                    if (onMenuCancelListener != null) {
-                        onMenuCancelListener.onMenuCancel(item);
-                    }
-                    return true;
-                }
-                return true;
-            });
-
-            popup.show();//showing popup menu
+            setupMoreMenu(view1);
         });
     }
 
@@ -286,6 +263,64 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         storiesList = null;
         storiesProgressView.destroy();
         super.onDestroy();
+    }
+
+    private void setupMoreMenu(View view) {
+        Activity activity = getActivity();
+        if (activity == null) {
+            return;
+        }
+        int currentItem = mViewPager.getCurrentItem();
+
+        if (dialogBottom == null) {
+            dialogBottom = new DialogBottom(activity);
+//                dialogBottom.setTitle(getString(R.string.options)
+            dialogBottom.setTitle(""
+                            , v2 -> {
+                            })
+                    .addBottomItem(getString(R.string.delete)
+                            , v2 -> {
+                                if (onClickDeleteStoryListener != null) {
+                                    onClickDeleteStoryListener.OnClickDeleteStory();
+                                }
+                                dialogBottom.dismiss();
+
+//                                deleteItemFromAdapter(mViewPager.getCurrentItem());
+                            }
+                            , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
+                    )
+                    .setCancel(getString(R.string.cancel)
+                            , v2 -> {
+                                touchUp();
+                            }
+                            , true
+                    )
+                    .setCanceledOnTouchOutside(true);
+        }
+        touchDown(view.getX(), view.getY());
+        dialogBottom.show();
+        mViewPager.postDelayed(() -> {
+            mViewPager.setCurrentItem(currentItem, false);
+        }, 300);
+    }
+
+    private void deleteItemFromAdapter(int currentItem) {
+        int storiesListSize = storiesList.size();
+        if (currentItem > -1 && currentItem < storiesListSize) {
+            MyStory myStory = storiesList.remove(currentItem);
+            if (myStory != null) {
+                if (currentItem + 1 < storiesListSize) {
+                    setupStories();
+                    /*storiesProgressView.setStoriesCount(storiesListSize - 1);
+                    storiesProgressView.setCurrentItem(currentItem);
+                    viewPagerAdapter.notifyDataSetChanged();
+                    mViewPager.setCurrentItem(currentItem);*/
+                    touchUp();
+                } else {
+                    onComplete();
+                }
+            }
+        }
     }
 
     private void updateHeading() {
@@ -457,12 +492,12 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         this.onStoryChangedCallback = onStoryChangedCallback;
     }
 
-    public void setOnContextItemListener(OnPopupItemListener onPopupItemListener) {
-        this.onPopupItemListener = onPopupItemListener;
+    public void setOnMenuCancelListener(OnClickDeleteStoryListener onClickDeleteStoryListener) {
+        this.onClickDeleteStoryListener = onClickDeleteStoryListener;
     }
 
-    public void setOnMenuCancelListener(OnMenuCancelListener onMenuCancelListener) {
-        this.onMenuCancelListener = onMenuCancelListener;
+    public void setDialogBottom(DialogBottom dialogBottom) {
+        this.dialogBottom = dialogBottom;
     }
 
     public static class Builder {
@@ -473,9 +508,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private final StoryViewHeaderInfo storyViewHeaderInfo;
         private ArrayList<StoryViewHeaderInfo> headingInfoList;
         private StoryClickListeners storyClickListeners;
-        private OnPopupItemListener onPopupItemListener;
-        private OnMenuCancelListener onMenuCancelListener;
         private OnStoryChangedCallback onStoryChangedCallback;
+        private OnClickDeleteStoryListener onClickDeleteStoryListener;
+        private DialogBottom dialogBottom;
 
         public Builder(FragmentManager fragmentManager) {
             this.fragmentManager = fragmentManager;
@@ -527,11 +562,11 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             if (onStoryChangedCallback != null) {
                 storyView.setOnStoryChangedCallback(onStoryChangedCallback);
             }
-            if (onPopupItemListener != null) {
-                storyView.setOnContextItemListener(onPopupItemListener);
+            if (onClickDeleteStoryListener != null) {
+                storyView.setOnMenuCancelListener(onClickDeleteStoryListener);
             }
-            if (onMenuCancelListener != null) {
-                storyView.setOnMenuCancelListener(onMenuCancelListener);
+            if (dialogBottom != null) {
+                storyView.setDialogBottom(dialogBottom);
             }
             return this;
         }
@@ -551,18 +586,18 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             return this;
         }
 
-        public Builder setOnContextItemListener(OnPopupItemListener onPopupItemListener) {
-            this.onPopupItemListener = onPopupItemListener;
-            return this;
-        }
-
-        public Builder setOnMenuCancelListener(OnMenuCancelListener onMenuCancelListener) {
-            this.onMenuCancelListener = onMenuCancelListener;
-            return this;
-        }
-
         public Builder setStoryClickListeners(StoryClickListeners storyClickListeners) {
             this.storyClickListeners = storyClickListeners;
+            return this;
+        }
+
+        public Builder setOnMenuCancelListener(OnClickDeleteStoryListener onClickDeleteStoryListener) {
+            this.onClickDeleteStoryListener = onClickDeleteStoryListener;
+            return this;
+        }
+
+        public Builder setDialogBottom(DialogBottom dialogBottom) {
+            this.dialogBottom = dialogBottom;
             return this;
         }
 
