@@ -111,6 +111,8 @@ public class ViewPagerAdapter extends PagerAdapter {
 //                e.printStackTrace();
             }
 
+            startStory();
+
         } else {
             mTextView.setVisibility(View.GONE);
             mImageView.setVisibility(View.VISIBLE);
@@ -126,15 +128,18 @@ public class ViewPagerAdapter extends PagerAdapter {
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            if (resource != null) {
-                                PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.relativeLayout),
-                                        ((BitmapDrawable) resource).getBitmap());
-                                pe.execute();
+                            try {
+                                if (resource != null) {
+                                    PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.relativeLayout),
+                                            ((BitmapDrawable) resource).getBitmap());
+                                    pe.execute();
+                                }
+                            } catch (Throwable e) {
+                                e.printStackTrace();
                             }
-                            if (!storiesStarted) {
-                                storiesStarted = true;
-                                storyCallbacks.startStories();
-                            }
+
+                            startStory();
+
                             return false;
                         }
                     })
@@ -144,6 +149,13 @@ public class ViewPagerAdapter extends PagerAdapter {
         collection.addView(view);
 
         return view;
+    }
+
+    private void startStory() {
+        if (!storiesStarted) {
+            storiesStarted = true;
+            storyCallbacks.startStories();
+        }
     }
 
     private Typeface getFontTypeFace(StoryTextFont textFont) {
