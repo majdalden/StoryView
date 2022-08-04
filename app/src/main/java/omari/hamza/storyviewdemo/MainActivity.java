@@ -105,7 +105,11 @@ public class MainActivity extends AppCompatActivity {
         );
         myStories.add(story7);
 
+        createStoryView(myStories);
 
+    }
+
+    private void createStoryView(ArrayList<MyStory> myStories) {
         new StoryView.Builder(getSupportFragmentManager())
                 .setStoriesList(myStories)
                 .setStoryDuration(5000)
@@ -124,10 +128,13 @@ public class MainActivity extends AppCompatActivity {
                 .setOnStoryChangedCallback(position -> {
 //                    Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_SHORT).show();
                 })
+                .setOnClickDeleteStoryListener((currentItem) -> {
+                    myStories.remove(currentItem);
+                    createStoryView(myStories);
+                })
                 .setStartingIndex(0)
                 .setRtl(true)
                 .build()
                 .show();
-
     }
 }

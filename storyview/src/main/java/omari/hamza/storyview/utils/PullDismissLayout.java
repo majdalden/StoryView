@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.MotionEventCompat;
 import androidx.core.view.ViewCompat;
 import androidx.customview.widget.ViewDragHelper;
 
@@ -24,6 +23,9 @@ public class PullDismissLayout extends FrameLayout {
     private float verticalTouchSlop;
     private TouchCallbacks mTouchCallbacks;
     private boolean animateAlpha;
+
+    private Float disableOnInterceptTouchEventX;
+    private Float disableOnInterceptTouchEventY;
 
     public PullDismissLayout(@NonNull Context context) {
         super(context);
@@ -52,6 +54,9 @@ public class PullDismissLayout extends FrameLayout {
             minFlingVelocity = (float) vc.getScaledMinimumFlingVelocity();
             dragHelper = ViewDragHelper.create(this, new PullDismissLayout.ViewDragCallback(this));
         }
+
+        disableOnInterceptTouchEventX = null;
+        disableOnInterceptTouchEventY = null;
     }
 
     public void computeScroll() {
@@ -61,8 +66,17 @@ public class PullDismissLayout extends FrameLayout {
         }
     }
 
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
+//        int action = MotionEventCompat.getActionMasked(event);
+        int action = event.getAction();
+
+        if (disableOnInterceptTouchEventX != null
+                && disableOnInterceptTouchEventY != null
+                && event.getX() >= disableOnInterceptTouchEventX
+                && event.getY() >= disableOnInterceptTouchEventY) {
+            return false;
+        }
 
         boolean pullingDown = false;
 
@@ -74,7 +88,7 @@ public class PullDismissLayout extends FrameLayout {
                 if (dy > dragHelper.getTouchSlop()) {
                     pullingDown = true;
                     mTouchCallbacks.touchPull();
-                }else{
+                } else {
                     mTouchCallbacks.touchDown(event.getX(), event.getY());
                 }
                 break;
@@ -116,8 +130,50 @@ public class PullDismissLayout extends FrameLayout {
         listener = l;
     }
 
+    public Float getDisableOnInterceptTouchEventX() {
+        return disableOnInterceptTouchEventX;
+    }
+
+    public void setmTouchCallbacks(TouchCallbacks mTouchCallbacks) {
+        this.mTouchCallbacks = mTouchCallbacks;
+    }
+
+    public interface Listener {
+        /**
+         * Layout is pulled down to dismiss
+         * Good time to finish activity, remove fragment or any view
+         */
+        void onDismissed();
+
+        /**
+         * Convenient method to avoid layout_color overriding event
+         * If you have a RecyclerView or ScrollerView in our layout_color your can
+         * avoid PullDismissLayout to handle event.
+         *
+         * @return true when ignore pull down event, f
+         * false for allow PullDismissLayout handle event
+         */
+        boolean onShouldInterceptTouchEvent();
+    }
+
+    public TouchCallbacks getmTouchCallbacks() {
+        return mTouchCallbacks;
+    }
+
+    public void setDisableOnInterceptTouchEventX(Float disableOnInterceptTouchEventX) {
+        this.disableOnInterceptTouchEventX = disableOnInterceptTouchEventX;
+    }
+
+    public Float getDisableOnInterceptTouchEventY() {
+        return disableOnInterceptTouchEventY;
+    }
+
+    public void setDisableOnInterceptTouchEventY(Float disableOnInterceptTouchEventY) {
+        this.disableOnInterceptTouchEventY = disableOnInterceptTouchEventY;
+    }
+
     private static class ViewDragCallback extends ViewDragHelper.Callback {
-        private PullDismissLayout pullDismissLayout;
+        private final PullDismissLayout pullDismissLayout;
         private int startTop;
         private float dragPercent;
         private View capturedView;
@@ -170,37 +226,11 @@ public class PullDismissLayout extends FrameLayout {
             dismissed = dragPercent >= 0.50F ||
                     (Math.abs(xv) > pullDismissLayout.minFlingVelocity && dragPercent > 0.20F);
             int finalTop = dismissed ? pullDismissLayout.getHeight() : startTop;
-            if (!dismissed){
+            if (!dismissed) {
                 pullDismissLayout.getmTouchCallbacks().touchUp();
             }
             pullDismissLayout.dragHelper.settleCapturedViewAt(0, finalTop);
             pullDismissLayout.invalidate();
         }
-    }
-
-    public void setmTouchCallbacks(TouchCallbacks mTouchCallbacks) {
-        this.mTouchCallbacks = mTouchCallbacks;
-    }
-
-    public interface Listener {
-        /**
-         * Layout is pulled down to dismiss
-         * Good time to finish activity, remove fragment or any view
-         */
-        void onDismissed();
-
-        /**
-         * Convenient method to avoid layout_color overriding event
-         * If you have a RecyclerView or ScrollerView in our layout_color your can
-         * avoid PullDismissLayout to handle event.
-         *
-         * @return true when ignore pull down event, f
-         * false for allow PullDismissLayout handle event
-         */
-        boolean onShouldInterceptTouchEvent();
-    }
-
-    public TouchCallbacks getmTouchCallbacks() {
-        return mTouchCallbacks;
     }
 }

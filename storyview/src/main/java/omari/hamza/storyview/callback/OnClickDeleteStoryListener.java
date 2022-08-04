@@ -1,5 +1,5 @@
 package omari.hamza.storyview.callback;
 
 public interface OnClickDeleteStoryListener {
-    void OnClickDeleteStory();
+    void OnClickDeleteStory(int position);
 }
