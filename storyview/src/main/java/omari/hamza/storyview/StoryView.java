@@ -187,10 +187,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             if (activity == null) {
                 return;
             }
-            PopupMenu popup = new PopupMenu(activity, view);
+            PopupMenu popup = new PopupMenu(activity, view1);
 
             if (onPopupItemListener != null) {
-                onPopupItemListener.onCreatePopupMenu(popup, view);
+                onPopupItemListener.onCreatePopupMenu(popup, view1);
                 return;
             }
 
