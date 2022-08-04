@@ -289,23 +289,29 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                             })
                     .addBottomItem(getString(R.string.delete)
                             , v2 -> {
-                                if (onClickDeleteStoryListener != null) {
-                                    onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
-                                }
-                                dialogBottom.dismiss();
-                                onComplete();
+                                activity.runOnUiThread(() -> {
+                                    if (onClickDeleteStoryListener != null) {
+                                        onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
+                                    }
+                                    dialogBottom.dismiss();
+                                    onComplete();
+                                });
 //                                deleteItemFromAdapter(currentItem);
                             }
                             , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
                     )
                     .setCancel(getString(R.string.cancel)
                             , v2 -> {
-                                touchUp();
+                                activity.runOnUiThread(() -> {
+                                    touchUp();
+                                });
                             }
                             , true
                     )
                     .setCancelClickListener(v2 -> {
-                        touchUp();
+                        activity.runOnUiThread(() -> {
+                            touchUp();
+                        });
                     })
                     .setCanceledOnTouchOutside(true);
         }

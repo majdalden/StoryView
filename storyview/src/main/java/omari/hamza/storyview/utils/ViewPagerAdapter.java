@@ -82,16 +82,33 @@ public class ViewPagerAdapter extends PagerAdapter {
             mImageView.setVisibility(View.GONE);
 
             mTextView.setText(currentStory.getText());
-            mTextView.setBackgroundColor(Color.parseColor(currentStory.getBackgroundColor()));
-            mTextView.setTextColor(Color.parseColor(currentStory.getTextColor()));
-            Typeface typeface = currentStory.getTypeface();
 
-            if (typeface == null) {
-                typeface = getFontTypeFace(currentStory.getTextFont());
+            try {
+                mTextView.setBackgroundColor(Color.parseColor(currentStory.getBackgroundColor()));
+            } catch (Exception e) {
+                mTextView.setBackgroundColor(Color.BLACK);
+//                e.printStackTrace();
             }
 
-            if (typeface != null) {
-                mTextView.setTypeface(typeface);
+            try {
+                mTextView.setTextColor(Color.parseColor(currentStory.getTextColor()));
+            } catch (Exception e) {
+                mTextView.setTextColor(Color.WHITE);
+//                e.printStackTrace();
+            }
+
+            try {
+                Typeface typeface = currentStory.getTypeface();
+
+                if (typeface == null) {
+                    typeface = getFontTypeFace(currentStory.getTextFont());
+                }
+
+                if (typeface != null) {
+                    mTextView.setTypeface(typeface);
+                }
+            } catch (Exception e) {
+//                e.printStackTrace();
             }
 
         } else {
