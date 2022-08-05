@@ -5,12 +5,14 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +39,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     private final Context context;
     private final StoryCallbacks storyCallbacks;
     private boolean storiesStarted = false;
+    private int currentPosition = 0;
 
     public ViewPagerAdapter(ArrayList<MyStory> images, Context context, StoryCallbacks storyCallbacks) {
         this.images = images;
@@ -66,6 +69,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         final View view = inflater.inflate(R.layout.layout_story_item, collection, false);
 
         final ImageView mImageView = view.findViewById(R.id.mImageView);
+        final VideoView mVideoView = view.findViewById(R.id.mVideoView);
         final TextView mTextView = view.findViewById(R.id.mTextView);
 
         if (!TextUtils.isEmpty(currentStory.getDescription())) {
@@ -80,6 +84,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         if (currentStory.getStoryType() == StoryType.TEXT) {
             mTextView.setVisibility(View.VISIBLE);
             mImageView.setVisibility(View.GONE);
+            mVideoView.setVisibility(View.GONE);
 
             mTextView.setText(currentStory.getText());
 
@@ -111,23 +116,55 @@ public class ViewPagerAdapter extends PagerAdapter {
 //                e.printStackTrace();
             }
 
-            startStory();
+            startStory(position);
 
         } else {
+            String fileUrl = currentStory.getUrl();
+            fileUrl = fileUrl == null ? "" : fileUrl.trim();
+
             mTextView.setVisibility(View.GONE);
-            mImageView.setVisibility(View.VISIBLE);
+
+            pauseStories(position);
+
+            if (currentStory.getStoryType() == StoryType.VIDEO) {
+                mVideoView.setVisibility(View.VISIBLE);
+                mImageView.setVisibility(View.GONE);
+
+                mVideoView.setVideoURI(Uri.parse(fileUrl));
+
+                mVideoView.setOnPreparedListener(mp -> {
+                    mp.start();
+                    startStory(position);
+                });
+
+                mVideoView.setOnErrorListener((mp, what, extra) -> {
+                    storyCallbacks.nextStory();
+                    return false;
+                });
+            } else {
+                mVideoView.setVisibility(View.GONE);
+                mImageView.setVisibility(View.VISIBLE);
+            }
 
             Glide.with(context)
-                    .load(currentStory.getUrl())
+                    .load(fileUrl)
                     .listener(new RequestListener<Drawable>() {
                         @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            storyCallbacks.nextStory();
+                        public boolean onLoadFailed(@Nullable GlideException e
+                                , Object model
+                                , Target<Drawable> target
+                                , boolean isFirstResource) {
+                            if (currentStory.getStoryType() != StoryType.VIDEO) {
+                                storyCallbacks.nextStory();
+                            }
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        public boolean onResourceReady(Drawable resource
+                                , Object model, Target<Drawable> target
+                                , DataSource dataSource
+                                , boolean isFirstResource) {
                             try {
                                 if (resource != null) {
                                     PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.relativeLayout)
@@ -138,8 +175,9 @@ public class ViewPagerAdapter extends PagerAdapter {
                                 e.printStackTrace();
                             }
 
-                            startStory();
-
+                            if (currentStory.getStoryType() != StoryType.VIDEO) {
+                                startStory(position);
+                            }
                             return false;
                         }
                     })
@@ -151,10 +189,17 @@ public class ViewPagerAdapter extends PagerAdapter {
         return view;
     }
 
-    private void startStory() {
-        if (!storiesStarted) {
+    private void startStory(int position) {
+        if (!storiesStarted && position == currentPosition) {
             storiesStarted = true;
             storyCallbacks.startStories();
+        }
+    }
+
+    private void pauseStories(int position) {
+        if (storiesStarted && position == currentPosition) {
+            storiesStarted = false;
+            storyCallbacks.pauseStories();
         }
     }
 
@@ -188,5 +233,9 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         (container).removeView((View) object);
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
     }
 }

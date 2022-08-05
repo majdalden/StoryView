@@ -111,7 +111,20 @@ public class MainActivity extends AppCompatActivity {
                 "#FFD15C5C",
                 "#FFFFFFFF"
         );
-        myStories.add(story7);
+        try {
+            MyStory story8 = new MyStory(
+                    StoryType.VIDEO,
+//                    "https://hony.us:5443/upload/6df407955e48d5e4709d49621f99ace4532ba6ce/Sd4GIoOAUGZre9iSuvwpO1ExUQ2LsNHt15Q2mpFB/VIDEO_20220805_062921.mp4",
+//                    "https://drive.google.com/file/d/1dug8adH3JUzUQOjDkgiGiK_Nvrfp8-AQ/view?usp=sharing",
+//                    "https://drive.google.com/file/d/1AQOB6and5XdEGWd-DYYYZqubDVJQIYZ-/view?usp=sharing",
+//                    "https://miran-media.s3.amazonaws.com/resources/2020/03/23/built-in_method_split_of_str_object_at_0x7fa042111d30.jpeg",
+                    "https://miran-media.s3.amazonaws.com/resources/2020/03/23/CA_-_25.mp4",
+                    simpleDateFormat.parse("03-10-2020 20:00:00")
+            );
+            myStories.add(story8);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         createStoryView(myStories);
 
