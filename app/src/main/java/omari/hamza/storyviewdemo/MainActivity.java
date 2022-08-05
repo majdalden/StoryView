@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 .setTitleText("Hamza Al-Omari")
                 .setSubtitleText("Damascus")
                 .setTitleLogoUrl("https://picsum.photos/1920/1080") // Default is Hidden
+                .setShowDialogBottom(true)
+                .setAddDeleteItemToMoreMenu(true)
                 .setStoryClickListeners(new StoryClickListeners() {
                     @Override
                     public void onDescriptionClickListener(int position) {

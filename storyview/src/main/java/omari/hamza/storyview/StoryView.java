@@ -28,11 +28,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.civitasv.ioslike.dialog.DialogBottom;
+import com.civitasv.ioslike.model.DialogText;
 import com.civitasv.ioslike.model.DialogTextStyle;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import omari.hamza.storyview.callback.OnClickDeleteStoryListener;
 import omari.hamza.storyview.callback.OnStoryChangedCallback;
@@ -101,8 +103,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     private OnClickDeleteStoryListener onClickDeleteStoryListener;
 
     private DialogBottom dialogBottom;
+    private List<DialogText> dialogTextItemList;
     private boolean isShowDialogBottom = false;
     private boolean isAddDeleteItemToMoreMenu = false;
+    private boolean isAddedDialogTextItemList;
 //    private boolean isShowMoreMenu;
 
     private StoryView() {
@@ -123,6 +127,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
         height = displaymetrics.heightPixels;
+        isAddedDialogTextItemList = false;
         // Get field from view
         readArguments();
         setupViews(view);
@@ -294,9 +299,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 //        isShowMoreMenu = true;
         if (dialogBottom == null) {
             dialogBottom = new DialogBottom(activity);
-            dialogBottom.setTitle(getString(R.string.options)
+            dialogBottom/*.setTitle(getString(R.string.options)
                             , v2 -> {
-                            })
+                            })*/
                     .setCancel(getString(R.string.cancel)
                             , v2 -> {
                                 activity.runOnUiThread(() -> {
@@ -309,24 +314,29 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                         activity.runOnUiThread(() -> {
                             touchUp();
                         });
-                    })
-                    .setCanceledOnTouchOutside(true);
+                    });
         }
 
-        if (dialogBottom != null && isAddDeleteItemToMoreMenu) {
-            dialogBottom.addBottomItem(getString(R.string.delete)
-                    , v2 -> {
-                        activity.runOnUiThread(() -> {
-                            if (onClickDeleteStoryListener != null) {
-                                onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
-                            }
-                            dialogBottom.dismiss();
-                            onComplete();
-                        });
+        if (dialogBottom != null && !isAddedDialogTextItemList) {
+            isAddedDialogTextItemList = true;
+            if (dialogTextItemList != null && !dialogTextItemList.isEmpty()) {
+                dialogBottom.setBottomList(dialogTextItemList);
+            }
+            if (isAddDeleteItemToMoreMenu) {
+                dialogBottom.addBottomItem(getString(R.string.delete)
+                        , v2 -> {
+                            activity.runOnUiThread(() -> {
+                                if (onClickDeleteStoryListener != null) {
+                                    onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
+                                }
+                                dialogBottom.dismiss();
+                                onComplete();
+                            });
 //                                deleteItemFromAdapter(currentItem);
-                    }
-                    , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
-            );
+                        }
+                        , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
+                );
+            }
         }
         touchDown(view.getX(), view.getY());
         dialogBottom.show();
@@ -560,6 +570,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         this.dialogBottom = dialogBottom;
     }
 
+    public void setDialogTextItemList(List<DialogText> dialogTextItemList) {
+        this.dialogTextItemList = dialogTextItemList;
+    }
+
     public void setAddDeleteItemToMoreMenu(boolean addDeleteItemToMoreMenu) {
         isAddDeleteItemToMoreMenu = addDeleteItemToMoreMenu;
     }
@@ -579,6 +593,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private OnStoryChangedCallback onStoryChangedCallback;
         private OnClickDeleteStoryListener onClickDeleteStoryListener;
         private DialogBottom dialogBottom;
+        private List<DialogText> dialogTextItemList;
         private boolean isShowDialogBottom;
         private boolean isAddDeleteItemToMoreMenu;
 
@@ -639,6 +654,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             if (dialogBottom != null) {
                 storyView.setDialogBottom(dialogBottom);
             }
+            if (dialogTextItemList != null) {
+                storyView.setDialogTextItemList(dialogTextItemList);
+            }
             storyView.setAddDeleteItemToMoreMenu(isAddDeleteItemToMoreMenu);
             storyView.setShowDialogBottom(isShowDialogBottom);
             return this;
@@ -676,6 +694,11 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
         public Builder setAddDeleteItemToMoreMenu(boolean addDeleteItemToMoreMenu) {
             isAddDeleteItemToMoreMenu = addDeleteItemToMoreMenu;
+            return this;
+        }
+
+        public Builder setDialogTextItemList(List<DialogText> dialogTextItemList) {
+            this.dialogTextItemList = dialogTextItemList;
             return this;
         }
 
