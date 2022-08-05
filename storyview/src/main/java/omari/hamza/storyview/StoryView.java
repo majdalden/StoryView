@@ -138,7 +138,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     private void readArguments() {
         assert getArguments() != null;
-        storiesList = new ArrayList<>((ArrayList<MyStory>) getArguments().getSerializable(IMAGES_KEY));
+//        storiesList = new ArrayList<>((ArrayList<MyStory>) getArguments().getSerializable(IMAGES_KEY));
+        storiesList = getArguments().getParcelableArrayList(IMAGES_KEY);
         duration = getArguments().getLong(DURATION_KEY, 2000);
         startingIndex = getArguments().getInt(STARTING_INDEX_TAG, 0);
         isRtl = getArguments().getBoolean(IS_RTL_TAG, false);
@@ -164,24 +165,24 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             titleCardView.setOnClickListener(v -> storyClickListeners.onTitleIconClickListener(counter));
         }
 
-        if (onStoryChangedCallback != null) {
-            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (onStoryChangedCallback != null) {
                     onStoryChangedCallback.storyChanged(position);
                 }
+                viewPagerAdapter.setCurrentPosition(position);
+            }
 
-                @Override
-                public void onPageSelected(int position) {
+            @Override
+            public void onPageSelected(int position) {
+            }
 
-                }
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-        }
+            }
+        });
 
         if (isRtl) {
             storiesProgressView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
@@ -354,7 +355,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
         if (storyHeaderInfo == null) return;
 
-        if (storyHeaderInfo.getTitleIconUrl() != null) {
+        if (storyHeaderInfo.getTitleIconUrl() != null && !storyHeaderInfo.getTitleIconUrl().trim().isEmpty()) {
             titleCardView.setVisibility(View.VISIBLE);
             if (getContext() == null) return;
             Glide.with(getContext())
@@ -365,14 +366,34 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             isHeadlessLogoMode = true;
         }
 
-        if (storyHeaderInfo.getTitle() != null) {
+        if (storyHeaderInfo.getTitle() != null && !storyHeaderInfo.getTitle().trim().isEmpty()) {
             titleTextView.setVisibility(View.VISIBLE);
             titleTextView.setText(storyHeaderInfo.getTitle());
         } else {
             titleTextView.setVisibility(View.GONE);
         }
 
-        if (storyHeaderInfo.getSubtitle() != null) {
+        if (storyHeaderInfo.getSubtitle() != null && !storyHeaderInfo.getSubtitle().trim().isEmpty()) {
+            subtitleTextView.setVisibility(View.VISIBLE);
+            subtitleTextView.setText(storyHeaderInfo.getSubtitle());
+
+            if (storiesList.get(counter).getDate() != null) {
+                titleTextView.setText(titleTextView.getText()
+                        + " "
+                        + getDurationBetweenDates(storiesList.get(counter).getDate(), Calendar.getInstance().getTime())
+                );
+            }
+        } else {
+            if (storiesList.get(counter).getDate() != null) {
+                subtitleTextView.setVisibility(View.VISIBLE);
+                subtitleTextView.setText(getDurationBetweenDates(storiesList.get(counter).getDate(), Calendar.getInstance().getTime()));
+
+            } else {
+                subtitleTextView.setVisibility(View.GONE);
+            }
+        }
+
+        /*if (storyHeaderInfo.getSubtitle() != null) {
             subtitleTextView.setVisibility(View.VISIBLE);
             subtitleTextView.setText(storyHeaderInfo.getSubtitle());
         } else {
@@ -384,7 +405,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                     + " "
                     + getDurationBetweenDates(storiesList.get(counter).getDate(), Calendar.getInstance().getTime())
             );
-        }
+        }*/
     }
 
     private void setHeadingVisibility(int visibility) {
@@ -542,7 +563,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         }
 
         public Builder setStoriesList(ArrayList<MyStory> storiesList) {
-            bundle.putSerializable(IMAGES_KEY, storiesList);
+//            bundle.putSerializable(IMAGES_KEY, storiesList);
+            bundle.putParcelableArrayList(IMAGES_KEY, storiesList);
             return this;
         }
 
