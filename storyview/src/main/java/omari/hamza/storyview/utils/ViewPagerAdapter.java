@@ -130,8 +130,8 @@ public class ViewPagerAdapter extends PagerAdapter {
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             try {
                                 if (resource != null) {
-                                    PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.relativeLayout),
-                                            ((BitmapDrawable) resource).getBitmap());
+                                    PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.relativeLayout)
+                                            , ((BitmapDrawable) resource).getBitmap());
                                     pe.execute();
                                 }
                             } catch (Throwable e) {

@@ -2,7 +2,6 @@ package omari.hamza.storyviewdemo;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -11,7 +10,6 @@ import androidx.databinding.DataBindingUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import omari.hamza.storyview.StoryView;
 import omari.hamza.storyview.callback.StoryClickListeners;
@@ -36,22 +34,24 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
         try {
-            MyStory story0 = new MyStory(
+            myStories.add(new MyStory(
+                    StoryType.IMAGE,
+                    "https://app.hony.us/uploads/picture/b8e5deec0a8d41b49b3ed788a577dc27.jpg",
+                    simpleDateFormat.parse("20-10-2021 00:00:00")
+            ));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            MyStory story1 = new MyStory(
                     StoryType.IMAGE,
                     "https://i.picsum.photos/id/370/1920/1080.jpg?hmac=BX7F76Chb5YLvSLJJTwZUSAIIFgcJsJTvJ55QkUH40E",
                     simpleDateFormat.parse("20-10-2019 10:00:00")
             );
-            myStories.add(story0);
+            myStories.add(story1);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        MyStory story1 = new MyStory(
-                StoryType.IMAGE,
-                "https://app.hony.us/uploads/picture/b8e5deec0a8d41b49b3ed788a577dc27.jpg",
-                new Date()
-        );
-        myStories.add(story1);
 
         try {
             MyStory story2 = new MyStory(
@@ -118,6 +118,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createStoryView(ArrayList<MyStory> myStories) {
+
+        if (myStories == null || myStories.isEmpty()) {
+            return;
+        }
+
+        new StoryView.Builder(getSupportFragmentManager())
+                .setStoriesList(myStories) // Required
+                .setStoryDuration(5000) // Default is 2000 Millis (2 Seconds)
+                .setTitleText("Hamza Al-Omari")
+                .setSubtitleText("Damascus")
+                .setTitleLogoUrl("https://picsum.photos/1920/1080") // Default is Hidden
+                .setStoryClickListeners(new StoryClickListeners() {
+                    @Override
+                    public void onDescriptionClickListener(int position) {
+                        //your action
+                    }
+
+                    @Override
+                    public void onTitleIconClickListener(int position) {
+                        //your action
+                    }
+                }) // Optional Listeners
+                .setOnClickDeleteStoryListener(position -> {
+                    myStories.remove(position);
+                    createStoryView(myStories);
+                    //your action
+                })
+                .build() // Must be called before calling show method
+                .show();
+    }
+
+    /*private void createStoryView(ArrayList<MyStory> myStories) {
+    if (myStories == null || myStories.isEmpty()) {
+            return;
+        }
         new StoryView.Builder(getSupportFragmentManager())
                 .setStoriesList(myStories)
                 .setStoryDuration(5000)
@@ -144,5 +179,5 @@ public class MainActivity extends AppCompatActivity {
                 .setRtl(true)
                 .build()
                 .show();
-    }
+    }*/
 }

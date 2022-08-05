@@ -41,7 +41,8 @@ public class PaletteExtraction extends AsyncTask<Void, Void, Palette> {
             View view = viewWeakReference.get();
             if (view == null) return;
 
-            GradientDrawable drawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{aPalette.getDarkVibrantColor(0), aPalette.getLightMutedColor(0)});
+            GradientDrawable drawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM
+                    , new int[]{aPalette.getDarkVibrantColor(0), aPalette.getLightMutedColor(0)});
             drawable.setCornerRadius(0f);
             view.setBackground(drawable);
         } catch (Throwable e) {
