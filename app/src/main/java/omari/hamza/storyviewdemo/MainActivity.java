@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import omari.hamza.storyview.StoryView;
 import omari.hamza.storyview.callback.StoryClickListeners;
@@ -35,15 +36,22 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
         try {
-            MyStory story1 = new MyStory(
+            MyStory story0 = new MyStory(
                     StoryType.IMAGE,
                     "https://i.picsum.photos/id/370/1920/1080.jpg?hmac=BX7F76Chb5YLvSLJJTwZUSAIIFgcJsJTvJ55QkUH40E",
                     simpleDateFormat.parse("20-10-2019 10:00:00")
             );
-            myStories.add(story1);
+            myStories.add(story0);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        MyStory story1 = new MyStory(
+                StoryType.IMAGE,
+                "https://app.hony.us/uploads/picture/b8e5deec0a8d41b49b3ed788a577dc27.jpg",
+                new Date()
+        );
+        myStories.add(story1);
 
         try {
             MyStory story2 = new MyStory(

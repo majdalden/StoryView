@@ -284,7 +284,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         isShowMoreMenu = true;
         if (dialogBottom == null) {
             dialogBottom = new DialogBottom(activity);
-            dialogBottom.setTitle(""
+            dialogBottom.setTitle(getString(R.string.options)
                             , v2 -> {
                             })
                     .addBottomItem(getString(R.string.delete)
