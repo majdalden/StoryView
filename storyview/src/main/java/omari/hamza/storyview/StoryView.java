@@ -305,16 +305,22 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                     .setCancel(getString(R.string.cancel)
                             , v2 -> {
                                 activity.runOnUiThread(() -> {
-                                    touchUp();
+//                                    touchUp();
                                 });
                             }
                             , true
                     )
-                    .setCancelClickListener(v2 -> {
+                    .setOnDismissListener(dialog -> {
                         activity.runOnUiThread(() -> {
                             touchUp();
                         });
+                    })
+                    .setCancelClickListener(v2 -> {
+                        activity.runOnUiThread(() -> {
+//                            touchUp();
+                        });
                     });
+
         }
 
         if (dialogBottom != null && !isAddedDialogTextItemList) {

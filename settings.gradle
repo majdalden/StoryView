@@ -1,2 +1,2 @@
-include ':app', ':storyview'
+include ':app', ':storyview', ':dialog'
 rootProject.name='StoryViewDemo'
