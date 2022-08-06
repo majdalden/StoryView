@@ -28,6 +28,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.civitasv.ioslike.dialog.DialogBottom;
+import com.civitasv.ioslike.dialog.DialogNormal;
 import com.civitasv.ioslike.model.DialogText;
 import com.civitasv.ioslike.model.DialogTextStyle;
 import com.google.android.material.button.MaterialButton;
@@ -107,6 +108,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     private boolean isShowDialogBottom = false;
     private boolean isAddDeleteItemToMoreMenu = false;
     private boolean isAddedDialogTextItemList;
+    private boolean isUserDismissMoreMenu;
 //    private boolean isShowMoreMenu;
 
     private StoryView() {
@@ -128,6 +130,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         width = displaymetrics.widthPixels;
         height = displaymetrics.heightPixels;
         isAddedDialogTextItemList = false;
+        isUserDismissMoreMenu = false;
         // Get field from view
         readArguments();
         setupViews(view);
@@ -312,7 +315,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                     )
                     .setOnDismissListener(dialog -> {
                         activity.runOnUiThread(() -> {
-                            touchUp();
+                            if (!isUserDismissMoreMenu) {
+                                touchUp();
+                            }
+                            isUserDismissMoreMenu = false;
                         });
                     })
                     .setCancelClickListener(v2 -> {
@@ -330,14 +336,47 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             }
             if (isAddDeleteItemToMoreMenu) {
                 dialogBottom.addBottomItem(getString(R.string.delete)
-                        , v2 -> {
+                        , view1 -> {
+                            isUserDismissMoreMenu = true;
                             activity.runOnUiThread(() -> {
-                                if (onClickDeleteStoryListener != null) {
-                                    onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
-                                }
-                                dialogBottom.dismiss();
-                                onComplete();
+                                new DialogNormal(activity)
+                                        .setTitle(R.string.delete_this_story)
+                                        .setContent(activity.getString(R.string.are_you_sure_you_want_to_delete_this_story))
+                                        .setConfirm(getString(R.string.delete)
+                                                , view2 -> {
+                                                    isUserDismissMoreMenu = true;
+                                                    if (onClickDeleteStoryListener != null) {
+                                                        onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
+                                                    }
+                                                    dialogBottom.dismiss();
+                                                    onComplete();
+                                                }
+                                                , true
+                                                , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
+                                        )
+                                        .setCancel(getString(R.string.cancel)
+                                                , view2 -> {
+//                                                    touchUp();
+                                                }
+                                                , true
+                                                , (new DialogTextStyle.Builder(activity).color(R.color.black)).build()
+                                        )
+                                        .setCancelClickListener(view2 -> {
+//                                            touchUp();
+                                                }
+                                        )
+                                        .setOnDismissListener(dialog -> {
+                                                    if (!isUserDismissMoreMenu) {
+                                                        touchUp();
+                                                    }
+                                                    isUserDismissMoreMenu = false;
+                                                }
+                                        )
+                                        .setCanceledOnTouchOutside(true)
+                                        .show();
                             });
+
+                            dialogBottom.dismiss();
 //                                deleteItemFromAdapter(currentItem);
                         }
                         , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
