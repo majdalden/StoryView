@@ -321,11 +321,6 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                             }
                             isUserDismissMoreMenu = false;
                         });
-                    })
-                    .setCancelClickListener(v2 -> {
-                        activity.runOnUiThread(() -> {
-//                            touchUp();
-                        });
                     });
 
         }
@@ -340,8 +335,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                         , view1 -> {
                             isUserDismissMoreMenu = true;
                             activity.runOnUiThread(() -> {
-                                new DialogNormal(activity)
-                                        .setTitle(R.string.delete_this_story)
+                                DialogNormal confirmationDeleteStoryDialog = new DialogNormal(activity);
+
+                                confirmationDeleteStoryDialog.setTitle(R.string.delete_this_story)
                                         .setContent(activity.getString(R.string.are_you_sure_you_want_to_delete_this_story))
                                         .setConfirm(getString(R.string.delete)
                                                 , view2 -> {
@@ -351,8 +347,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                                                     }
                                                     moreMenuDialogBottom.dismiss();
                                                     onComplete();
+                                                    confirmationDeleteStoryDialog.dismiss();
                                                 }
-                                                , true
                                                 , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
                                         )
                                         .setCancel(getString(R.string.cancel)
@@ -362,10 +358,6 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                                                 , true
                                                 , (new DialogTextStyle.Builder(activity).color(R.color.black)).build()
                                         )
-                                        .setCancelClickListener(view2 -> {
-//                                            touchUp();
-                                                }
-                                        )
                                         .setOnDismissListener(dialog -> {
                                                     if (!isUserDismissMoreMenu) {
                                                         touchUp();
@@ -373,8 +365,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                                                     isUserDismissMoreMenu = false;
                                                 }
                                         )
-                                        .setCanceledOnTouchOutside(true)
-                                        .show();
+                                        .setCanceledOnTouchOutside(true);
+
+                                confirmationDeleteStoryDialog.show();
+
                                 moreMenuDialogBottom.dismiss();
                             });
                         }

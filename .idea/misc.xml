@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="dialog/src/main/res/layout/dialog_bottom.xml" value="0.365625" />
         <entry key="storyview/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.325" />
         <entry key="storyview/src/main/res/layout/dialog_stories.xml" value="0.25" />
         <entry key="storyview/src/main/res/layout/layout_story_item.xml" value="0.365625" />

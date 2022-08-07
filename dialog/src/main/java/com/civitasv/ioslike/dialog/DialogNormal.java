@@ -908,7 +908,11 @@ public class DialogNormal {
             mConfirm.setTypeface(confirm.getDialogTextStyle().getTypeface());
         }
         if (dismiss)
-            mCancel.setOnClickListener(v -> dismiss());
+            mCancel.setOnClickListener(v -> {
+//                if (confirm.getOnClickListener() != null)
+//                    confirm.getOnClickListener().onClick(v);
+                dismiss();
+            });
         mConfirmAutoDismiss = dismiss;
         mShowConfirm = true;
         return this;
