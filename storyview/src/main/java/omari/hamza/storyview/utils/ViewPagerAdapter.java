@@ -6,7 +6,9 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,9 @@ public class ViewPagerAdapter extends PagerAdapter {
     private final StoryCallbacks storyCallbacks;
     private boolean storiesStarted = false;
     private int currentPosition = 0;
+
+    private int maxStoryTextLength = 300;
+    private int maxStoryTextLine = 10;
 
     public ViewPagerAdapter(ArrayList<MyStory> images, Context context, StoryCallbacks storyCallbacks) {
         this.images = images;
@@ -86,7 +91,16 @@ public class ViewPagerAdapter extends PagerAdapter {
             mImageView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.GONE);
 
+
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(maxStoryTextLength);
+            mTextView.setFilters(fArray);
+            mTextView.setMaxLines(maxStoryTextLine);
+
+
             mTextView.setText(currentStory.getText());
+
+            checkSizeText(context, mTextView);
 
             try {
                 mTextView.setBackgroundColor(Color.parseColor(currentStory.getBackgroundColor()));
@@ -237,5 +251,39 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     public void setCurrentPosition(int currentPosition) {
         this.currentPosition = currentPosition;
+    }
+
+    private void checkSizeText(Context context, TextView textView) {
+        if (context == null
+                || textView == null
+                || textView.getText() == null
+                || textView.getText().toString().trim().isEmpty()) {
+            return;
+        }
+
+        String textStory = textView.getText().toString().trim();
+        int textStoryLength = textStory.length();
+        float textStorySizeLarge = context.getResources().getDimension(R.dimen._36sdp);
+        float textStorySizeMedium = context.getResources().getDimension(R.dimen._28sdp);
+        float textStorySizeSmall = context.getResources().getDimension(R.dimen._20sdp);
+
+        float textStoryToSizeLarge = ((1.0F / 3.0F) * maxStoryTextLength);
+        float textStoryToSizeMedium = ((2.0F / 3.0F) * maxStoryTextLength);
+
+        if (textStoryToSizeLarge > textStoryLength) {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textStorySizeLarge);
+        } else if (textStoryToSizeMedium > textStoryLength) {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textStorySizeMedium);
+        } else {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textStorySizeSmall);
+        }
+    }
+
+    public void setMaxStoryTextLength(int maxStoryTextLength) {
+        this.maxStoryTextLength = maxStoryTextLength;
+    }
+
+    public void setMaxStoryTextLine(int maxStoryTextLine) {
+        this.maxStoryTextLine = maxStoryTextLine;
     }
 }

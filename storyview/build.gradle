@@ -53,4 +53,8 @@ dependencies {
 //    implementation 'com.github.majdalden:android-ios-like-dialog:0.2.0'
     implementation project(path: ':dialog')
 
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
+
 }
