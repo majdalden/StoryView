@@ -63,7 +63,7 @@ public class DialogBottom {
         Window dialogWindow = mDialog.getWindow();
         dialogWindow.setGravity(Gravity.START | Gravity.BOTTOM);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        lp.width = (int) (DisplayUtil.getInstance(context).getScreenWidth());
+        lp.width = DisplayUtil.getInstance(context).getScreenWidth();
         lp.x = 0;
         lp.y = 0;
         dialogWindow.setAttributes(lp);
@@ -319,6 +319,7 @@ public class DialogBottom {
             mTitle.setOnClickListener(title.getOnClickListener());
         if (title.getDialogTextStyle() != null) {
             mTitle.setTextSize(title.getDialogTextStyle().getTextSize());
+            mTitle.setAllCaps(title.getDialogTextStyle().isTextAllCaps());
             mTitle.setTextColor(title.getDialogTextStyle().getColor());
             mTitle.setTypeface(title.getDialogTextStyle().getTypeface());
         }
@@ -336,6 +337,7 @@ public class DialogBottom {
         if (style == null)
             throw new NullPointerException();
         mTitle.setTextSize(style.getTextSize());
+        mTitle.setAllCaps(style.isTextAllCaps());
         mTitle.setTextColor(style.getColor());
         mTitle.setTypeface(style.getTypeface());
         return this;
@@ -573,6 +575,7 @@ public class DialogBottom {
         else mCancel.setOnClickListener(v -> dismiss());
         if (cancel.getDialogTextStyle() != null) {
             mCancel.setTextSize(cancel.getDialogTextStyle().getTextSize());
+            mCancel.setAllCaps(cancel.getDialogTextStyle().isTextAllCaps());
             mCancel.setTextColor(cancel.getDialogTextStyle().getColor());
             mCancel.setTypeface(cancel.getDialogTextStyle().getTypeface());
         }
@@ -597,6 +600,7 @@ public class DialogBottom {
             mCancel.setOnClickListener(cancel.getOnClickListener());
         if (cancel.getDialogTextStyle() != null) {
             mCancel.setTextSize(cancel.getDialogTextStyle().getTextSize());
+            mCancel.setAllCaps(cancel.getDialogTextStyle().isTextAllCaps());
             mCancel.setTextColor(cancel.getDialogTextStyle().getColor());
             mCancel.setTypeface(cancel.getDialogTextStyle().getTypeface());
         }
@@ -617,6 +621,7 @@ public class DialogBottom {
         if (style == null)
             throw new NullPointerException();
         mCancel.setTextSize(style.getTextSize());
+        mCancel.setAllCaps(style.isTextAllCaps());
         mCancel.setTextColor(style.getColor());
         mCancel.setTypeface(style.getTypeface());
         return this;

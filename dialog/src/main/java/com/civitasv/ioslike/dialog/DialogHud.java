@@ -58,6 +58,29 @@ public class DialogHud {
     private Mode mode = Mode.LOADING; // 显示模式 默认为loading
 
     /**
+     * 设置加载信息
+     *
+     * @param label 加载信息
+     * @return 弹窗对象
+     */
+    public DialogHud setLabel(DialogText label) {
+        if (label == null)
+            throw new NullPointerException("title can't be null!");
+        if (label.getText() != null)
+            mLabel.setText(label.getText());
+        if (label.getOnClickListener() != null)
+            mLabel.setOnClickListener(label.getOnClickListener());
+        if (label.getDialogTextStyle() != null) {
+            mLabel.setTextSize(label.getDialogTextStyle().getTextSize());
+            mLabel.setAllCaps(label.getDialogTextStyle().isTextAllCaps());
+            mLabel.setTextColor(label.getDialogTextStyle().getColor());
+            mLabel.setTypeface(label.getDialogTextStyle().getTypeface());
+        }
+        mShowLabel = true;
+        return this;
+    }
+
+    /**
      * 构造方法
      *
      * @param context 上下文
@@ -184,28 +207,6 @@ public class DialogHud {
     }
 
     /**
-     * 设置加载信息
-     *
-     * @param label 加载信息
-     * @return 弹窗对象
-     */
-    public DialogHud setLabel(DialogText label) {
-        if (label == null)
-            throw new NullPointerException("title can't be null!");
-        if (label.getText() != null)
-            mLabel.setText(label.getText());
-        if (label.getOnClickListener() != null)
-            mLabel.setOnClickListener(label.getOnClickListener());
-        if (label.getDialogTextStyle() != null) {
-            mLabel.setTextSize(label.getDialogTextStyle().getTextSize());
-            mLabel.setTextColor(label.getDialogTextStyle().getColor());
-            mLabel.setTypeface(label.getDialogTextStyle().getTypeface());
-        }
-        mShowLabel = true;
-        return this;
-    }
-
-    /**
      * 设置加载信息样式
      *
      * @param style 样式
@@ -215,8 +216,32 @@ public class DialogHud {
         if (style == null)
             throw new NullPointerException();
         mLabel.setTextSize(style.getTextSize());
+        mLabel.setAllCaps(style.isTextAllCaps());
         mLabel.setTextColor(style.getColor());
         mLabel.setTypeface(style.getTypeface());
+        return this;
+    }
+
+    /**
+     * 设置详情信息内容
+     *
+     * @param labelDetail 详情内容
+     * @return 弹窗对象
+     */
+    public DialogHud setLabelDetail(DialogText labelDetail) {
+        if (labelDetail == null)
+            throw new NullPointerException("content can't be null!");
+        if (labelDetail.getText() != null)
+            mDetailLabel.setText(labelDetail.getText());
+        if (labelDetail.getOnClickListener() != null)
+            mDetailLabel.setOnClickListener(labelDetail.getOnClickListener());
+        if (labelDetail.getDialogTextStyle() != null) {
+            mDetailLabel.setTextSize(labelDetail.getDialogTextStyle().getTextSize());
+            mDetailLabel.setAllCaps(labelDetail.getDialogTextStyle().isTextAllCaps());
+            mDetailLabel.setTextColor(labelDetail.getDialogTextStyle().getColor());
+            mDetailLabel.setTypeface(labelDetail.getDialogTextStyle().getTypeface());
+        }
+        mShowDetailLabel = true;
         return this;
     }
 
@@ -330,28 +355,6 @@ public class DialogHud {
     }
 
     /**
-     * 设置详情信息内容
-     *
-     * @param labelDetail 详情内容
-     * @return 弹窗对象
-     */
-    public DialogHud setLabelDetail(DialogText labelDetail) {
-        if (labelDetail == null)
-            throw new NullPointerException("content can't be null!");
-        if (labelDetail.getText() != null)
-            mDetailLabel.setText(labelDetail.getText());
-        if (labelDetail.getOnClickListener() != null)
-            mDetailLabel.setOnClickListener(labelDetail.getOnClickListener());
-        if (labelDetail.getDialogTextStyle() != null) {
-            mDetailLabel.setTextSize(labelDetail.getDialogTextStyle().getTextSize());
-            mDetailLabel.setTextColor(labelDetail.getDialogTextStyle().getColor());
-            mDetailLabel.setTypeface(labelDetail.getDialogTextStyle().getTypeface());
-        }
-        mShowDetailLabel = true;
-        return this;
-    }
-
-    /**
      * 设置内容样式
      *
      * @param style 样式
@@ -361,9 +364,15 @@ public class DialogHud {
         if (style == null)
             throw new NullPointerException();
         mDetailLabel.setTextSize(style.getTextSize());
+        mDetailLabel.setAllCaps(style.isTextAllCaps());
         mDetailLabel.setTextColor(style.getColor());
         mDetailLabel.setTypeface(style.getTypeface());
         return this;
+    }
+
+    public enum Mode {
+        // 加载 圆环 成功 失败
+        LOADING, ANNULAR, SUCCESS, FAIL
     }
 
     /**
@@ -926,10 +935,5 @@ public class DialogHud {
         loading();
         setLoadingImage(R.drawable.ic_load_fail);
         stopAnimation();
-    }
-
-    public enum Mode {
-        // 加载 圆环 成功 失败
-        LOADING, ANNULAR, SUCCESS, FAIL
     }
 }

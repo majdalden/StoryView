@@ -22,13 +22,20 @@ public final class DialogTextStyle {
 
     private final float textSize; // 字大
 
+    private final boolean textAllCaps; // 字大
+
     private final Typeface typeface; // 样式
 
     private DialogTextStyle(Builder builder) {
         context = builder.context;
         color = builder.color;
         textSize = builder.textSize;
+        textAllCaps = builder.textAllCaps;
         typeface = builder.typeface;
+    }
+
+    public boolean isTextAllCaps() {
+        return textAllCaps;
     }
 
     public int getColor() {
@@ -48,12 +55,14 @@ public final class DialogTextStyle {
         // 可选参数
         private int color;
         private float textSize; // 单位：sp
+        private boolean textAllCaps; // 单位：sp
         private Typeface typeface;
 
         public Builder(Context context) {
             this.context = context;
             this.color = ContextCompat.getColor(context, R.color.black);  // 黑色
             this.textSize = 16;
+            this.textAllCaps = false;
             this.typeface = Typeface.defaultFromStyle(Typeface.NORMAL);
         }
 
@@ -69,6 +78,11 @@ public final class DialogTextStyle {
 
         public Builder textSize(float textSize) {
             this.textSize = textSize;
+            return this;
+        }
+
+        public Builder textAllCaps(boolean textAllCaps) {
+            this.textAllCaps = textAllCaps;
             return this;
         }
 

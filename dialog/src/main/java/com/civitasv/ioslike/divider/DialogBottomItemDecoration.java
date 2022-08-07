@@ -22,8 +22,9 @@ public class DialogBottomItemDecoration extends RecyclerView.ItemDecoration {
     private static final String TAG = "DividerItem";
 
     private static final int[] ATTRS = new int[]{16843284};
-    private final Rect mBounds = new Rect();
+
     private Drawable mDivider;
+    private final Rect mBounds = new Rect();
 
     /**
      * 构造方法

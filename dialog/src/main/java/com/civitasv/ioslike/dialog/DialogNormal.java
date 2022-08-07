@@ -184,6 +184,7 @@ public class DialogNormal {
             mTitle.setOnClickListener(title.getOnClickListener());
         if (title.getDialogTextStyle() != null) {
             mTitle.setTextSize(title.getDialogTextStyle().getTextSize());
+            mTitle.setAllCaps(title.getDialogTextStyle().isTextAllCaps());
             mTitle.setTextColor(title.getDialogTextStyle().getColor());
             mTitle.setTypeface(title.getDialogTextStyle().getTypeface());
         }
@@ -201,6 +202,7 @@ public class DialogNormal {
         if (style == null)
             throw new NullPointerException();
         mTitle.setTextSize(style.getTextSize());
+        mTitle.setAllCaps(style.isTextAllCaps());
         mTitle.setTextColor(style.getColor());
         mTitle.setTypeface(style.getTypeface());
         return this;
@@ -330,6 +332,7 @@ public class DialogNormal {
             mContent.setOnClickListener(content.getOnClickListener());
         if (content.getDialogTextStyle() != null) {
             mContent.setTextSize(content.getDialogTextStyle().getTextSize());
+            mContent.setAllCaps(content.getDialogTextStyle().isTextAllCaps());
             mContent.setTextColor(content.getDialogTextStyle().getColor());
             mContent.setTypeface(content.getDialogTextStyle().getTypeface());
         }
@@ -347,6 +350,7 @@ public class DialogNormal {
         if (style == null)
             throw new NullPointerException();
         mContent.setTextSize(style.getTextSize());
+        mContent.setAllCaps(style.isTextAllCaps());
         mContent.setTextColor(style.getColor());
         mContent.setTypeface(style.getTypeface());
         return this;
@@ -581,6 +585,7 @@ public class DialogNormal {
             mCancel.setOnClickListener(cancel.getOnClickListener());
         if (cancel.getDialogTextStyle() != null) {
             mCancel.setTextSize(cancel.getDialogTextStyle().getTextSize());
+            mCancel.setAllCaps(cancel.getDialogTextStyle().isTextAllCaps());
             mCancel.setTextColor(cancel.getDialogTextStyle().getColor());
             mCancel.setTypeface(cancel.getDialogTextStyle().getTypeface());
         }
@@ -610,6 +615,7 @@ public class DialogNormal {
         else mCancel.setOnClickListener(v -> dismiss());
         if (cancel.getDialogTextStyle() != null) {
             mCancel.setTextSize(cancel.getDialogTextStyle().getTextSize());
+            mCancel.setAllCaps(cancel.getDialogTextStyle().isTextAllCaps());
             mCancel.setTextColor(cancel.getDialogTextStyle().getColor());
             mCancel.setTypeface(cancel.getDialogTextStyle().getTypeface());
         }
@@ -628,6 +634,7 @@ public class DialogNormal {
         if (style == null)
             throw new NullPointerException();
         mCancel.setTextSize(style.getTextSize());
+        mCancel.setAllCaps(style.isTextAllCaps());
         mCancel.setTextColor(style.getColor());
         mCancel.setTypeface(style.getTypeface());
         return this;
@@ -871,6 +878,7 @@ public class DialogNormal {
         else mConfirm.setOnClickListener(v -> dismiss());
         if (confirm.getDialogTextStyle() != null) {
             mConfirm.setTextSize(confirm.getDialogTextStyle().getTextSize());
+            mConfirm.setAllCaps(confirm.getDialogTextStyle().isTextAllCaps());
             mConfirm.setTextColor(confirm.getDialogTextStyle().getColor());
             mConfirm.setTypeface(confirm.getDialogTextStyle().getTypeface());
         }
@@ -895,6 +903,7 @@ public class DialogNormal {
             mConfirm.setOnClickListener(confirm.getOnClickListener());
         if (confirm.getDialogTextStyle() != null) {
             mConfirm.setTextSize(confirm.getDialogTextStyle().getTextSize());
+            mConfirm.setAllCaps(confirm.getDialogTextStyle().isTextAllCaps());
             mConfirm.setTextColor(confirm.getDialogTextStyle().getColor());
             mConfirm.setTypeface(confirm.getDialogTextStyle().getTypeface());
         }
@@ -915,6 +924,7 @@ public class DialogNormal {
         if (style == null)
             throw new NullPointerException();
         mConfirm.setTextSize(style.getTextSize());
+        mConfirm.setAllCaps(style.isTextAllCaps());
         mConfirm.setTextColor(style.getColor());
         mConfirm.setTypeface(style.getTypeface());
         return this;

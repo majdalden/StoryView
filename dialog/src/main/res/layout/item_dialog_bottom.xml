@@ -11,6 +11,7 @@
         android:background="@drawable/dialog_bottom_item_middle_btn"
         android:gravity="center"
         android:stateListAnimator="@null"
+        android:textAllCaps="false"
         android:textColor="@color/ios_like_blue"
         android:textSize="16sp" />
 </LinearLayout>

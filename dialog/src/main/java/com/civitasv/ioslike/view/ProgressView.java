@@ -31,9 +31,6 @@ import java.util.TimerTask;
  * 2020-11-22
  */
 public class ProgressView extends View {
-    private final RectF oval;
-    private final Paint paint;
-    private final Rect rect;
     private int progressColor;    // 进度的颜色
     private float progressRadius;    // 进度半径大小
     private int progressBgColor;    // 背景颜色
@@ -45,8 +42,55 @@ public class ProgressView extends View {
     private float progress;    // 当前进度
     private int direction;
     private int dismissTime;
+    private final RectF oval;
     private boolean showProgressText = true;
     private boolean autoDismiss = true;
+    private final Paint paint;
+    private final Rect rect;
+
+    public enum Direction {
+        LEFT(0, 180.0f),
+        TOP(1, 270.0f),
+        RIGHT(2, 0.0f),
+        BOTTOM(3, 90.0f);
+
+        private final int direction;
+        private final float degree;
+
+        Direction(int direction, float degree) {
+            this.direction = direction;
+            this.degree = degree;
+        }
+
+        public static Direction getDirection(int direction) {
+            for (Direction enumObject : values()) {
+                if (enumObject.equalsDirection(direction)) {
+                    return enumObject;
+                }
+            }
+            return RIGHT;
+        }
+
+        public static float getDegree(int direction) {
+            Direction enumObject = getDirection(direction);
+            if (enumObject == null) {
+                return 0;
+            }
+            return enumObject.getDegree();
+        }
+
+        public int getDirection() {
+            return direction;
+        }
+
+        public float getDegree() {
+            return degree;
+        }
+
+        public boolean equalsDirection(int direction) {
+            return this.direction == direction;
+        }
+    }
 
     public ProgressView(Context context) {
         this(context, null);
@@ -306,49 +350,5 @@ public class ProgressView extends View {
         animator.setDuration(2000);
         animator.setInterpolator(new LinearInterpolator());
         animator.start();
-    }
-
-    public enum Direction {
-        LEFT(0, 180.0f),
-        TOP(1, 270.0f),
-        RIGHT(2, 0.0f),
-        BOTTOM(3, 90.0f);
-
-        private final int direction;
-        private final float degree;
-
-        Direction(int direction, float degree) {
-            this.direction = direction;
-            this.degree = degree;
-        }
-
-        public static Direction getDirection(int direction) {
-            for (Direction enumObject : values()) {
-                if (enumObject.equalsDirection(direction)) {
-                    return enumObject;
-                }
-            }
-            return RIGHT;
-        }
-
-        public static float getDegree(int direction) {
-            Direction enumObject = getDirection(direction);
-            if (enumObject == null) {
-                return 0;
-            }
-            return enumObject.getDegree();
-        }
-
-        public int getDirection() {
-            return direction;
-        }
-
-        public float getDegree() {
-            return degree;
-        }
-
-        public boolean equalsDirection(int direction) {
-            return this.direction == direction;
-        }
     }
 }

@@ -76,6 +76,7 @@ public class DialogBottomAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (item.getDialogTextStyle() != null) {
             ((ViewHolder) holder).button.setTextColor(item.getDialogTextStyle().getColor());
             ((ViewHolder) holder).button.setTextSize(item.getDialogTextStyle().getTextSize());
+            ((ViewHolder) holder).button.setAllCaps(item.getDialogTextStyle().isTextAllCaps());
             ((ViewHolder) holder).button.setTypeface(item.getDialogTextStyle().getTypeface());
         }
         if (position == getItemCount() - 1) {

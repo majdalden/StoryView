@@ -103,10 +103,11 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     private OnClickDeleteStoryListener onClickDeleteStoryListener;
 
-    private DialogBottom dialogBottom;
+    private DialogBottom moreMenuDialogBottom;
     private List<DialogText> dialogTextItemList;
     private boolean isShowDialogBottom = false;
     private boolean isAddDeleteItemToMoreMenu = false;
+    private boolean isViewAudienceToMoreMenu = false;
     private boolean isAddedDialogTextItemList;
     private boolean isUserDismissMoreMenu;
 //    private boolean isShowMoreMenu;
@@ -300,9 +301,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
 
 //        isShowMoreMenu = true;
-        if (dialogBottom == null) {
-            dialogBottom = new DialogBottom(activity);
-            dialogBottom/*.setTitle(getString(R.string.options)
+        if (moreMenuDialogBottom == null) {
+            moreMenuDialogBottom = new DialogBottom(activity);
+            moreMenuDialogBottom/*.setTitle(getString(R.string.options)
                             , v2 -> {
                             })*/
                     .setCancel(getString(R.string.cancel)
@@ -329,13 +330,13 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
         }
 
-        if (dialogBottom != null && !isAddedDialogTextItemList) {
+        if (moreMenuDialogBottom != null && !isAddedDialogTextItemList) {
             isAddedDialogTextItemList = true;
             if (dialogTextItemList != null && !dialogTextItemList.isEmpty()) {
-                dialogBottom.setBottomList(dialogTextItemList);
+                moreMenuDialogBottom.setBottomList(dialogTextItemList);
             }
             if (isAddDeleteItemToMoreMenu) {
-                dialogBottom.addBottomItem(getString(R.string.delete)
+                moreMenuDialogBottom.addBottomItem(getString(R.string.delete)
                         , view1 -> {
                             isUserDismissMoreMenu = true;
                             activity.runOnUiThread(() -> {
@@ -348,7 +349,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                                                     if (onClickDeleteStoryListener != null) {
                                                         onClickDeleteStoryListener.OnClickDeleteStory(currentItem);
                                                     }
-                                                    dialogBottom.dismiss();
+                                                    moreMenuDialogBottom.dismiss();
                                                     onComplete();
                                                 }
                                                 , true
@@ -374,17 +375,26 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
                                         )
                                         .setCanceledOnTouchOutside(true)
                                         .show();
+                                moreMenuDialogBottom.dismiss();
                             });
-
-                            dialogBottom.dismiss();
-//                                deleteItemFromAdapter(currentItem);
                         }
                         , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_red)).build()
                 );
             }
+
+            if (isViewAudienceToMoreMenu) {
+                moreMenuDialogBottom.addBottomItem(getString(R.string.delete)
+                        , view1 -> {
+                            isUserDismissMoreMenu = true;
+                            activity.runOnUiThread(() -> {
+                                moreMenuDialogBottom.dismiss();
+                            });
+                        }
+                );
+            }
         }
         touchDown(view.getX(), view.getY());
-        dialogBottom.show();
+        moreMenuDialogBottom.show();
 
 //        isShowMoreMenu = false;
     }
@@ -554,7 +564,17 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         storiesProgressView.pause();
     }
 
-    @Override
+    public void touchDown() {
+        float xValue = 0f;
+        float yValue = 0f;
+        if (moreIV != null) {
+            xValue = moreIV.getX();
+            yValue = moreIV.getY();
+        }
+
+        touchDown(xValue, yValue);
+    }
+
     public void touchDown(float xValue, float yValue) {
         this.xValue = xValue;
         this.yValue = yValue;
@@ -611,8 +631,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         this.onClickDeleteStoryListener = onClickDeleteStoryListener;
     }
 
-    public void setDialogBottom(DialogBottom dialogBottom) {
-        this.dialogBottom = dialogBottom;
+    public void setMoreMenuDialogBottom(DialogBottom moreMenuDialogBottom) {
+        this.moreMenuDialogBottom = moreMenuDialogBottom;
     }
 
     public void setDialogTextItemList(List<DialogText> dialogTextItemList) {
@@ -621,6 +641,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     public void setAddDeleteItemToMoreMenu(boolean addDeleteItemToMoreMenu) {
         isAddDeleteItemToMoreMenu = addDeleteItemToMoreMenu;
+    }
+
+    public void setViewAudienceToMoreMenu(boolean viewAudienceToMoreMenu) {
+        isViewAudienceToMoreMenu = viewAudienceToMoreMenu;
     }
 
     public void setShowDialogBottom(boolean showDialogBottom) {
@@ -637,10 +661,11 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private StoryClickListeners storyClickListeners;
         private OnStoryChangedCallback onStoryChangedCallback;
         private OnClickDeleteStoryListener onClickDeleteStoryListener;
-        private DialogBottom dialogBottom;
+        private DialogBottom moreMenuDialogBottom;
         private List<DialogText> dialogTextItemList;
         private boolean isShowDialogBottom;
         private boolean isAddDeleteItemToMoreMenu;
+        private boolean isViewAudienceToMoreMenu;
 
         public Builder(FragmentManager fragmentManager) {
             this.fragmentManager = fragmentManager;
@@ -696,13 +721,14 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             if (onClickDeleteStoryListener != null) {
                 storyView.setOnClickDeleteStoryListener(onClickDeleteStoryListener);
             }
-            if (dialogBottom != null) {
-                storyView.setDialogBottom(dialogBottom);
+            if (moreMenuDialogBottom != null) {
+                storyView.setMoreMenuDialogBottom(moreMenuDialogBottom);
             }
             if (dialogTextItemList != null) {
                 storyView.setDialogTextItemList(dialogTextItemList);
             }
             storyView.setAddDeleteItemToMoreMenu(isAddDeleteItemToMoreMenu);
+            storyView.setViewAudienceToMoreMenu(isViewAudienceToMoreMenu);
             storyView.setShowDialogBottom(isShowDialogBottom);
             return this;
         }
@@ -732,13 +758,18 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             return this;
         }
 
-        public Builder setDialogBottom(DialogBottom dialogBottom) {
-            this.dialogBottom = dialogBottom;
+        public Builder setMoreMenuDialogBottom(DialogBottom moreMenuDialogBottom) {
+            this.moreMenuDialogBottom = moreMenuDialogBottom;
             return this;
         }
 
         public Builder setAddDeleteItemToMoreMenu(boolean addDeleteItemToMoreMenu) {
             isAddDeleteItemToMoreMenu = addDeleteItemToMoreMenu;
+            return this;
+        }
+
+        public Builder setViewAudienceToMoreMenu(boolean viewAudienceToMoreMenu) {
+            isViewAudienceToMoreMenu = viewAudienceToMoreMenu;
             return this;
         }
 
@@ -750,6 +781,14 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         public Builder setShowDialogBottom(boolean showDialogBottom) {
             isShowDialogBottom = showDialogBottom;
             return this;
+        }
+
+        public void startStories() {
+            storyView.touchUp();
+        }
+
+        public void pauseStories() {
+            storyView.touchDown();
         }
 
         public void show() {

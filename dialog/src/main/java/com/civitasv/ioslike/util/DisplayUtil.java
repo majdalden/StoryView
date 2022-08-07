@@ -14,14 +14,6 @@ public class DisplayUtil {
     private final int screenWidth;
     private final int screenHeight;
 
-    private DisplayUtil(Context context) {
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        manager.getDefaultDisplay().getMetrics(dm);
-        screenWidth = dm.widthPixels;// 获取屏幕分辨率宽度
-        screenHeight = dm.heightPixels;// 获取屏幕分辨率高度
-    }
-
     public static DisplayUtil getInstance(Context mContext) {
         if (instance == null) {
             synchronized (DisplayUtil.class) {
@@ -30,6 +22,14 @@ public class DisplayUtil {
             }
         }
         return instance;
+    }
+
+    private DisplayUtil(Context context) {
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(dm);
+        screenWidth = dm.widthPixels;// 获取屏幕分辨率宽度
+        screenHeight = dm.heightPixels;// 获取屏幕分辨率高度
     }
 
     //获取屏幕宽度

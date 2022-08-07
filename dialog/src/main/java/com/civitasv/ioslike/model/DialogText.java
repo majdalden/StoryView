@@ -15,12 +15,6 @@ public final class DialogText {
 
     private final DialogTextStyle dialogTextStyle; // 样式
 
-    public DialogText(Builder builder) {
-        this.text = builder.text;
-        this.onClickListener = builder.onClickListener;
-        this.dialogTextStyle = builder.dialogTextStyle;
-    }
-
     public String getText() {
         return text;
     }
@@ -57,5 +51,11 @@ public final class DialogText {
         public DialogText build() {
             return new DialogText(this);
         }
+    }
+
+    public DialogText(Builder builder) {
+        this.text = builder.text;
+        this.onClickListener = builder.onClickListener;
+        this.dialogTextStyle = builder.dialogTextStyle;
     }
 }
