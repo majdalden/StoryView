@@ -47,7 +47,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     private int currentPosition = 0;
 
     private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
-    private int maxStoryTextLine = MAX_STORY_TEXT_LINES;
+    private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
 
     public ViewPagerAdapter(ArrayList<MyStory> images, Context context, StoryCallbacks storyCallbacks) {
         this.images = images;
@@ -101,8 +101,8 @@ public class ViewPagerAdapter extends PagerAdapter {
                 mTextView.setFilters(fArray);
             }
 
-            if (maxStoryTextLine > 0) {
-                mTextView.setMaxLines(maxStoryTextLine);
+            if (maxStoryTextLines > 0) {
+                mTextView.setMaxLines(maxStoryTextLines);
             }
 
             mTextView.setText(currentStory.getText());
@@ -290,7 +290,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         this.maxStoryTextLength = maxStoryTextLength;
     }
 
-    public void setMaxStoryTextLine(int maxStoryTextLine) {
-        this.maxStoryTextLine = maxStoryTextLine;
+    public void setMaxStoryTextLines(int maxStoryTextLines) {
+        this.maxStoryTextLines = maxStoryTextLines;
     }
 }

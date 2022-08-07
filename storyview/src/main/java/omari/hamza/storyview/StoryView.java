@@ -116,7 +116,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 //    private boolean isShowMoreMenu;
 
     private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
-    private int maxStoryTextLine = MAX_STORY_TEXT_LINES;
+    private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
 
     private StoryView() {
     }
@@ -151,7 +151,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         updateHeading();
         viewPagerAdapter = new ViewPagerAdapter(storiesList, getContext(), this);
         viewPagerAdapter.setMaxStoryTextLength(maxStoryTextLength);
-        viewPagerAdapter.setMaxStoryTextLine(maxStoryTextLine);
+        viewPagerAdapter.setMaxStoryTextLines(maxStoryTextLines);
         mViewPager.setAdapter(viewPagerAdapter);
     }
 
@@ -657,8 +657,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         this.maxStoryTextLength = maxStoryTextLength;
     }
 
-    public void setMaxStoryTextLine(int maxStoryTextLine) {
-        this.maxStoryTextLine = maxStoryTextLine;
+    public void setMaxStoryTextLines(int maxStoryTextLines) {
+        this.maxStoryTextLines = maxStoryTextLines;
     }
 
     public static class Builder {
@@ -677,7 +677,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private boolean isAddDeleteItemToMoreMenu;
         private boolean isViewAudienceToMoreMenu;
         private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
-        private int maxStoryTextLine = MAX_STORY_TEXT_LINES;
+        private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
 
         public Builder(FragmentManager fragmentManager) {
             this.fragmentManager = fragmentManager;
@@ -743,7 +743,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             storyView.setViewAudienceToMoreMenu(isViewAudienceToMoreMenu);
             storyView.setShowDialogBottom(isShowDialogBottom);
             storyView.setMaxStoryTextLength(maxStoryTextLength);
-            storyView.setMaxStoryTextLine(maxStoryTextLine);
+            storyView.setMaxStoryTextLines(maxStoryTextLines);
             return this;
         }
 
@@ -802,8 +802,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             return this;
         }
 
-        public Builder setMaxStoryTextLine(int maxStoryTextLine) {
-            this.maxStoryTextLine = maxStoryTextLine;
+        public Builder setMaxStoryTextLines(int maxStoryTextLines) {
+            this.maxStoryTextLines = maxStoryTextLines;
             return this;
         }
 

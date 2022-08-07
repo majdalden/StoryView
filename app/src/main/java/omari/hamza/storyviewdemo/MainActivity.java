@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 .setShowDialogBottom(true)
                 .setAddDeleteItemToMoreMenu(true)
                 .setViewAudienceToMoreMenu(true)
-                .setMaxStoryTextLine(300)
+                .setMaxStoryTextLines(300)
                 .setMaxStoryTextLength(10)
                 .setStoryClickListeners(new StoryClickListeners() {
                     @Override
