@@ -59,6 +59,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
     private final static String IMAGES_KEY = "IMAGES";
 
+    public static final int MAX_STORY_TEXT_LENGTH = 300;
+    public static final int MAX_STORY_TEXT_LINES = 10;
+
     private long duration = 2000; //Default Duration
 
     private static final String DURATION_KEY = "DURATION";
@@ -112,8 +115,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     private boolean isUserDismissMoreMenu;
 //    private boolean isShowMoreMenu;
 
-    private int maxStoryTextLength = 300;
-    private int maxStoryTextLine = 10;
+    private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
+    private int maxStoryTextLine = MAX_STORY_TEXT_LINES;
 
     private StoryView() {
     }
@@ -673,8 +676,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private boolean isShowDialogBottom;
         private boolean isAddDeleteItemToMoreMenu;
         private boolean isViewAudienceToMoreMenu;
-        private int maxStoryTextLength;
-        private int maxStoryTextLine;
+        private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
+        private int maxStoryTextLine = MAX_STORY_TEXT_LINES;
 
         public Builder(FragmentManager fragmentManager) {
             this.fragmentManager = fragmentManager;

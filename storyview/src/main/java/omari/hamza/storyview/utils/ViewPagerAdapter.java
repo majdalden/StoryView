@@ -1,5 +1,8 @@
 package omari.hamza.storyview.utils;
 
+import static omari.hamza.storyview.StoryView.MAX_STORY_TEXT_LENGTH;
+import static omari.hamza.storyview.StoryView.MAX_STORY_TEXT_LINES;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -43,8 +46,8 @@ public class ViewPagerAdapter extends PagerAdapter {
     private boolean storiesStarted = false;
     private int currentPosition = 0;
 
-    private int maxStoryTextLength = 300;
-    private int maxStoryTextLine = 10;
+    private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
+    private int maxStoryTextLine = MAX_STORY_TEXT_LINES;
 
     public ViewPagerAdapter(ArrayList<MyStory> images, Context context, StoryCallbacks storyCallbacks) {
         this.images = images;
@@ -92,11 +95,15 @@ public class ViewPagerAdapter extends PagerAdapter {
             mVideoView.setVisibility(View.GONE);
 
 
-            InputFilter[] fArray = new InputFilter[1];
-            fArray[0] = new InputFilter.LengthFilter(maxStoryTextLength);
-            mTextView.setFilters(fArray);
-            mTextView.setMaxLines(maxStoryTextLine);
+            if (maxStoryTextLength > 0) {
+                InputFilter[] fArray = new InputFilter[1];
+                fArray[0] = new InputFilter.LengthFilter(maxStoryTextLength);
+                mTextView.setFilters(fArray);
+            }
 
+            if (maxStoryTextLine > 0) {
+                mTextView.setMaxLines(maxStoryTextLine);
+            }
 
             mTextView.setText(currentStory.getText());
 

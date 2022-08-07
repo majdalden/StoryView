@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                 "#FFD15C5C",
                 "#FFFFFFFF"
         );
+        myStories.add(story7);
+
         try {
             MyStory story8 = new MyStory(
                     StoryType.VIDEO,
@@ -125,6 +127,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        MyStory story9 = new MyStory(
+                StoryType.TEXT,
+                "1\n2\n3\n4",
+                Typeface.create("sans-serif-medium", Typeface.NORMAL),
+                "#FF000000",
+                "#FFFFFFFF"
+        );
+        myStories.add(story9);
+
 
         createStoryView(myStories);
 
@@ -145,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
                 .setShowDialogBottom(true)
                 .setAddDeleteItemToMoreMenu(true)
                 .setViewAudienceToMoreMenu(true)
+                .setMaxStoryTextLine(300)
+                .setMaxStoryTextLength(10)
                 .setStoryClickListeners(new StoryClickListeners() {
                     @Override
                     public void onDescriptionClickListener(int position) {
