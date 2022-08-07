@@ -2,6 +2,7 @@
     <string name="app_name">StoryView</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="view_audience">View Audience</string>
     <string name="more">More</string>
     <string name="options">Options</string>
     <string name="delete_this_story">Delete this story?</string>

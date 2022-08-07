@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitleLogoUrl("https://picsum.photos/1920/1080") // Default is Hidden
                 .setShowDialogBottom(true)
                 .setAddDeleteItemToMoreMenu(true)
+                .setViewAudienceToMoreMenu(true)
                 .setStoryClickListeners(new StoryClickListeners() {
                     @Override
                     public void onDescriptionClickListener(int position) {

@@ -383,7 +383,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             }
 
             if (isViewAudienceToMoreMenu) {
-                moreMenuDialogBottom.addBottomItem(getString(R.string.delete)
+                moreMenuDialogBottom.addBottomItem(getString(R.string.view_audience)
                         , view1 -> {
                             isUserDismissMoreMenu = true;
                             activity.runOnUiThread(() -> {
