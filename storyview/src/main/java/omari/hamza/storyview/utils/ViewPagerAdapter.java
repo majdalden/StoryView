@@ -3,6 +3,7 @@ package omari.hamza.storyview.utils;
 import static omari.hamza.storyview.StoryView.MAX_STORY_TEXT_LENGTH;
 import static omari.hamza.storyview.StoryView.MAX_STORY_TEXT_LINES;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -41,7 +42,7 @@ import omari.hamza.storyview.model.StoryType;
 public class ViewPagerAdapter extends PagerAdapter {
 
     private final ArrayList<MyStory> images;
-    private final Context context;
+    private final Context activity;
     private final StoryCallbacks storyCallbacks;
     private boolean storiesStarted = false;
     private int currentPosition = 0;
@@ -49,9 +50,9 @@ public class ViewPagerAdapter extends PagerAdapter {
     private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
     private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
 
-    public ViewPagerAdapter(ArrayList<MyStory> images, Context context, StoryCallbacks storyCallbacks) {
+    public ViewPagerAdapter(Activity activity, ArrayList<MyStory> images, StoryCallbacks storyCallbacks) {
         this.images = images;
-        this.context = context;
+        this.activity = activity;
         this.storyCallbacks = storyCallbacks;
     }
 
@@ -70,7 +71,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup collection, final int position) {
 
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(activity);
 
         MyStory currentStory = images.get(position);
 
@@ -106,7 +107,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
             mTextView.setText(currentStory.getText());
 
-            checkSizeText(context, mTextView);
+            checkSizeText(activity, mTextView);
 
             try {
                 mTextView.setBackgroundColor(Color.parseColor(currentStory.getBackgroundColor()));
@@ -138,35 +139,38 @@ public class ViewPagerAdapter extends PagerAdapter {
 
             startStory(position);
 
-        } else {
+        } else if (currentStory.getStoryType() == StoryType.VIDEO) {
+            mVideoView.setVisibility(View.VISIBLE);
+            mImageView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.GONE);
+
             String fileUrl = currentStory.getUrl();
             fileUrl = fileUrl == null ? "" : fileUrl.trim();
 
+            mVideoView.setVideoURI(Uri.parse(fileUrl));
+
+            mVideoView.setOnPreparedListener(mp -> {
+                mp.start();
+                startStory(position);
+            });
+
+            mVideoView.setOnErrorListener((mp, what, extra) -> {
+                storyCallbacks.nextStory();
+                return false;
+            });
+
+        } else if (currentStory.getStoryType() == StoryType.IMAGE) {
+            mVideoView.setVisibility(View.GONE);
+            mImageView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.GONE);
+
+            String fileUrl = currentStory.getUrl();
+            fileUrl = fileUrl == null ? "" : fileUrl.trim();
+
 
             pauseStories(position);
 
-            if (currentStory.getStoryType() == StoryType.VIDEO) {
-                mVideoView.setVisibility(View.VISIBLE);
-                mImageView.setVisibility(View.GONE);
-
-                mVideoView.setVideoURI(Uri.parse(fileUrl));
-
-                mVideoView.setOnPreparedListener(mp -> {
-                    mp.start();
-                    startStory(position);
-                });
-
-                mVideoView.setOnErrorListener((mp, what, extra) -> {
-                    storyCallbacks.nextStory();
-                    return false;
-                });
-            } else {
-                mVideoView.setVisibility(View.GONE);
-                mImageView.setVisibility(View.VISIBLE);
-            }
-
-            Glide.with(context)
+            Glide.with(activity)
                     .load(fileUrl)
                     .listener(new RequestListener<Drawable>() {
                         @Override
@@ -174,9 +178,7 @@ public class ViewPagerAdapter extends PagerAdapter {
                                 , Object model
                                 , Target<Drawable> target
                                 , boolean isFirstResource) {
-                            if (currentStory.getStoryType() != StoryType.VIDEO) {
-                                storyCallbacks.nextStory();
-                            }
+                            storyCallbacks.nextStory();
                             return false;
                         }
 
@@ -187,7 +189,7 @@ public class ViewPagerAdapter extends PagerAdapter {
                                 , boolean isFirstResource) {
                             try {
                                 if (resource != null) {
-                                    PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.relativeLayout)
+                                    PaletteExtraction pe = new PaletteExtraction(view.findViewById(R.id.rootLayout)
                                             , ((BitmapDrawable) resource).getBitmap());
                                     pe.execute();
                                 }
@@ -195,9 +197,7 @@ public class ViewPagerAdapter extends PagerAdapter {
                                 e.printStackTrace();
                             }
 
-                            if (currentStory.getStoryType() != StoryType.VIDEO) {
-                                startStory(position);
-                            }
+                            startStory(position);
                             return false;
                         }
                     })
@@ -226,27 +226,27 @@ public class ViewPagerAdapter extends PagerAdapter {
     private Typeface getFontTypeFace(StoryTextFont textFont) {
         switch (textFont) {
             case CAIRO_BOLD:
-                return ResourcesCompat.getFont(context, R.font.cairo_bold);
+                return ResourcesCompat.getFont(activity, R.font.cairo_bold);
             case POPPINS_BOLD:
-                return ResourcesCompat.getFont(context, R.font.poppins_bold);
+                return ResourcesCompat.getFont(activity, R.font.poppins_bold);
             case POPPINS_LIGHT:
-                return ResourcesCompat.getFont(context, R.font.poppins_light);
+                return ResourcesCompat.getFont(activity, R.font.poppins_light);
             case POPPINS_REGULAR:
-                return ResourcesCompat.getFont(context, R.font.poppins_regular);
+                return ResourcesCompat.getFont(activity, R.font.poppins_regular);
             case POPPINS_SEMI_BOLD:
-                return ResourcesCompat.getFont(context, R.font.poppins_semi_bold);
+                return ResourcesCompat.getFont(activity, R.font.poppins_semi_bold);
             case ROBOTO_MEDIUM:
-                return ResourcesCompat.getFont(context, R.font.roboto_medium);
+                return ResourcesCompat.getFont(activity, R.font.roboto_medium);
             case ROBOTO_REGULAR:
-                return ResourcesCompat.getFont(context, R.font.roboto_regular);
+                return ResourcesCompat.getFont(activity, R.font.roboto_regular);
             case SF_PRO_DISPLAY_MEDIUM:
-                return ResourcesCompat.getFont(context, R.font.sf_pro_display_medium);
+                return ResourcesCompat.getFont(activity, R.font.sf_pro_display_medium);
             case SOURCE_SAN_PRO_SEMIBOLD:
-                return ResourcesCompat.getFont(context, R.font.source_san_pro_semibold);
+                return ResourcesCompat.getFont(activity, R.font.source_san_pro_semibold);
             case SOURCE_SAN_PROBOLD:
-                return ResourcesCompat.getFont(context, R.font.source_san_probold);
+                return ResourcesCompat.getFont(activity, R.font.source_san_probold);
             default:
-                return ResourcesCompat.getFont(context, R.font.app_roboto_bold);
+                return ResourcesCompat.getFont(activity, R.font.app_roboto_bold);
         }
     }
 
