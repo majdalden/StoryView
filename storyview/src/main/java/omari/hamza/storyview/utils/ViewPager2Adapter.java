@@ -101,6 +101,7 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
             mTextView.setVisibility(View.VISIBLE);
             mImageView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
 
             storyCallbacks.changeOrientation(-1);
 
