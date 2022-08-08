@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -43,8 +44,8 @@ import omari.hamza.storyview.model.StoryType;
 
 public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolder> {
 
-    private Activity activity;
-    private List<MyStory> items;
+    private final Activity activity;
+    private final List<MyStory> items;
     private final StoryCallbacks storyCallbacks;
 
     private boolean isFirstTime = true;
@@ -79,9 +80,13 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
             isFirstTime = false;
         }
 
+        final ConstraintLayout rootLayout = holder.rootLayout;
         final ImageView mImageView = holder.mImageView;
         final VideoView mVideoView = holder.mVideoView;
         final TextView mTextView = holder.mTextView;
+        final ProgressBar progressBar = holder.progressBar;
+
+        rootLayout.setBackgroundColor(Color.BLACK);
 
         if (!TextUtils.isEmpty(currentStory.getDescription())) {
             TextView textView = holder.descriptionTextView;
@@ -143,37 +148,40 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
 
             startStory(holder.getAbsoluteAdapterPosition());
 
-        } else if (currentStory.getStoryType() == StoryType.VIDEO) {
-            mVideoView.setVisibility(View.VISIBLE);
-            mImageView.setVisibility(View.GONE);
-            mTextView.setVisibility(View.GONE);
-
+        } else {
             String fileUrl = currentStory.getUrl();
             fileUrl = fileUrl == null ? "" : fileUrl.trim();
 
-            mVideoView.setVideoURI(Uri.parse(fileUrl));
-
-            mVideoView.setOnPreparedListener(mp -> {
-                mp.seekTo(0);
-                mp.start();
-                storyCallbacks.changeOrientation(mp.getDuration());
-                startStory(holder.getAbsoluteAdapterPosition());
-            });
-
-            mVideoView.setOnErrorListener((mp, what, extra) -> {
-                storyCallbacks.nextStory();
-                return false;
-            });
-
-        } else if (currentStory.getStoryType() == StoryType.IMAGE) {
+            mTextView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.GONE);
             mImageView.setVisibility(View.VISIBLE);
-            mTextView.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
 
-            storyCallbacks.changeOrientation(-1);
+            if (currentStory.getStoryType() == StoryType.VIDEO) {
+                mVideoView.setVisibility(View.VISIBLE);
 
-            String fileUrl = currentStory.getUrl();
-            fileUrl = fileUrl == null ? "" : fileUrl.trim();
+                mVideoView.setVideoURI(Uri.parse(fileUrl));
+
+                mVideoView.setOnPreparedListener(mp -> {
+                    mp.seekTo(0);
+                    mp.start();
+
+                    storyCallbacks.changeOrientation(mp.getDuration());
+
+                    mVideoView.setVisibility(View.VISIBLE);
+                    mImageView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+
+                    startStory(holder.getAbsoluteAdapterPosition());
+                });
+
+                mVideoView.setOnErrorListener((mp, what, extra) -> {
+                    storyCallbacks.nextStory();
+                    return false;
+                });
+            } else {
+                storyCallbacks.changeOrientation(-1);
+            }
 
             Glide.with(activity)
                     .load(fileUrl)
@@ -183,7 +191,9 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
                                 , Object model
                                 , Target<Drawable> target
                                 , boolean isFirstResource) {
-                            storyCallbacks.nextStory();
+                            if (currentStory.getStoryType() != StoryType.VIDEO) {
+                                storyCallbacks.nextStory();
+                            }
                             return false;
                         }
 
@@ -192,6 +202,7 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
                                 , Object model, Target<Drawable> target
                                 , DataSource dataSource
                                 , boolean isFirstResource) {
+
                             try {
                                 if (resource != null) {
                                     PaletteExtraction pe = new PaletteExtraction(holder.rootLayout, ((BitmapDrawable) resource).getBitmap());
@@ -200,8 +211,10 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
                             } catch (Throwable e) {
                                 e.printStackTrace();
                             }
-
-                            startStory(holder.getAbsoluteAdapterPosition());
+                            if (currentStory.getStoryType() != StoryType.VIDEO) {
+                                startStory(holder.getAbsoluteAdapterPosition());
+                                progressBar.setVisibility(View.GONE);
+                            }
                             return false;
                         }
                     })
@@ -302,6 +315,7 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
         final VideoView mVideoView;
         final TextView mTextView;
         final TextView descriptionTextView;
+        final ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -311,6 +325,7 @@ public class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.Vi
             mVideoView = itemView.findViewById(R.id.mVideoView);
             mTextView = itemView.findViewById(R.id.mTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 }
