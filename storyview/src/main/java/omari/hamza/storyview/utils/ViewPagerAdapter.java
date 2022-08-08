@@ -94,7 +94,6 @@ public class ViewPagerAdapter extends PagerAdapter {
             mImageView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.GONE);
 
-
             if (maxStoryTextLength > 0) {
                 InputFilter[] fArray = new InputFilter[1];
                 fArray[0] = new InputFilter.LengthFilter(maxStoryTextLength);

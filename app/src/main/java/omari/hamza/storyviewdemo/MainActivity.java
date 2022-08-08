@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             MyStory story2 = new MyStory(
                     StoryType.IMAGE,
-                    "https://i.picsum.photos/id/164/3840/2160.jpg?hmac=CWM12wwPFuBimhVAl7RT-A8PoZxPNkGsnzQQcI0mIJU",
+//                    "https://i.picsum.photos/id/164/3840/2160.jpg?hmac=CWM12wwPFuBimhVAl7RT-A8PoZxPNkGsnzQQcI0mIJU",
+                    "https://app.hony.us/story/file/299ed998-fc97-4fe3-8862-274c78d8cc82.png",
                     simpleDateFormat.parse("26-10-2019 15:00:00"),
                     "#TEAM_STANNIS"
             );

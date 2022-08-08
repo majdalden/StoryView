@@ -149,7 +149,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         storiesProgressView.setStoriesCount(storiesList.size());
         storiesProgressView.setStoryDuration(duration);
         updateHeading();
-        viewPagerAdapter = new ViewPagerAdapter(storiesList, getContext(), this);
+        viewPagerAdapter = new ViewPagerAdapter(storiesList, getActivity(), this);
         viewPagerAdapter.setMaxStoryTextLength(maxStoryTextLength);
         viewPagerAdapter.setMaxStoryTextLines(maxStoryTextLines);
         mViewPager.setAdapter(viewPagerAdapter);
