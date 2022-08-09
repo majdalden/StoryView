@@ -4,6 +4,7 @@ import static omari.hamza.storyview.utils.Utils.getDurationBetweenDates;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
@@ -116,6 +118,9 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     private boolean isAddedDialogTextItemList;
     private boolean isUserDismissMoreMenu;
 //    private boolean isShowMoreMenu;
+
+    private DialogInterface.OnDismissListener onDismissListener;
+    private DialogInterface.OnCancelListener onCancelListener;
 
     private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
     private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
@@ -241,6 +246,24 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             moreIV.setVisibility(View.GONE);
         }
 
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(dialog);
+        }
+    }
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+
+        if (onCancelListener != null) {
+            onCancelListener.onCancel(dialog);
+        }
     }
 
     @Override
@@ -716,6 +739,14 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         this.maxStoryTextLines = maxStoryTextLines;
     }
 
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
+    public void setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+        this.onCancelListener = onCancelListener;
+    }
+
     public static class Builder {
 
         private StoryView storyView;
@@ -733,6 +764,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private boolean isViewAudienceToMoreMenu;
         private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
         private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
+        private DialogInterface.OnDismissListener onDismissListener;
+        private DialogInterface.OnCancelListener onCancelListener;
 
         public Builder(FragmentManager fragmentManager) {
             this.fragmentManager = fragmentManager;
@@ -799,6 +832,8 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             storyView.setShowDialogBottom(isShowDialogBottom);
             storyView.setMaxStoryTextLength(maxStoryTextLength);
             storyView.setMaxStoryTextLines(maxStoryTextLines);
+            storyView.setOnDismissListener(onDismissListener);
+            storyView.setOnCancelListener(onCancelListener);
             return this;
         }
 
@@ -859,6 +894,16 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
         public Builder setMaxStoryTextLines(int maxStoryTextLines) {
             this.maxStoryTextLines = maxStoryTextLines;
+            return this;
+        }
+
+        public Builder setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+            this.onDismissListener = onDismissListener;
+            return this;
+        }
+
+        public Builder setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+            this.onCancelListener = onCancelListener;
             return this;
         }
 
