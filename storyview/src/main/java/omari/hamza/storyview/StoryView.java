@@ -26,6 +26,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -119,6 +120,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
     private boolean isUserDismissMoreMenu;
 //    private boolean isShowMoreMenu;
 
+    private DialogInterface.OnShowListener onShowListener;
     private DialogInterface.OnDismissListener onDismissListener;
     private DialogInterface.OnCancelListener onCancelListener;
 
@@ -254,6 +256,33 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
         if (onDismissListener != null) {
             onDismissListener.onDismiss(dialog);
+        }
+    }
+
+    @Override
+    public int show(@NonNull FragmentTransaction transaction, @Nullable String tag) {
+        int mBackStackId = super.show(transaction, tag);
+        if (onShowListener != null) {
+            onShowListener.onShow(getDialog());
+        }
+        return mBackStackId;
+    }
+
+    @Override
+    public void show(@NonNull FragmentManager manager, @Nullable String tag) {
+        super.show(manager, tag);
+
+        if (onShowListener != null) {
+            onShowListener.onShow(getDialog());
+        }
+    }
+
+    @Override
+    public void showNow(@NonNull FragmentManager manager, @Nullable String tag) {
+        super.showNow(manager, tag);
+
+        if (onShowListener != null) {
+            onShowListener.onShow(getDialog());
         }
     }
 
@@ -739,6 +768,10 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         this.maxStoryTextLines = maxStoryTextLines;
     }
 
+    public void setOnShowListener(DialogInterface.OnShowListener onShowListener) {
+        this.onShowListener = onShowListener;
+    }
+
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;
     }
@@ -765,6 +798,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
         private int maxStoryTextLength = MAX_STORY_TEXT_LENGTH;
         private int maxStoryTextLines = MAX_STORY_TEXT_LINES;
         private DialogInterface.OnDismissListener onDismissListener;
+        private DialogInterface.OnShowListener onShowListener;
         private DialogInterface.OnCancelListener onCancelListener;
 
         public Builder(FragmentManager fragmentManager) {
@@ -832,6 +866,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
             storyView.setShowDialogBottom(isShowDialogBottom);
             storyView.setMaxStoryTextLength(maxStoryTextLength);
             storyView.setMaxStoryTextLines(maxStoryTextLines);
+            storyView.setOnShowListener(onShowListener);
             storyView.setOnDismissListener(onDismissListener);
             storyView.setOnCancelListener(onCancelListener);
             return this;
@@ -874,6 +909,11 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 
         public Builder setViewAudienceToMoreMenu(boolean viewAudienceToMoreMenu) {
             isViewAudienceToMoreMenu = viewAudienceToMoreMenu;
+            return this;
+        }
+
+        public Builder setOnShowListener(DialogInterface.OnShowListener onShowListener) {
+            this.onShowListener = onShowListener;
             return this;
         }
 
