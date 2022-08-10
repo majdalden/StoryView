@@ -464,6 +464,7 @@ public class StoryView extends DialogFragment implements StoriesProgressView.Sto
 //                                                    touchUp();
                                                 }
                                                 , true
+//                                                , (new DialogTextStyle.Builder(activity).color(R.color.ios_like_blue)).build()
                                                 , (new DialogTextStyle.Builder(activity).color(R.color.black)).build()
                                         )
                                         .setOnDismissListener(dialog -> {
