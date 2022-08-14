@@ -59,12 +59,14 @@ public class PullDismissLayout extends FrameLayout {
         disableOnInterceptTouchEventY = null;
     }
 
+    @Override
     public void computeScroll() {
         super.computeScroll();
         if (dragHelper != null && dragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
+
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
@@ -113,6 +115,7 @@ public class PullDismissLayout extends FrameLayout {
         return false;
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         dragHelper.processTouchEvent(event);
         return dragHelper.getCapturedView() != null;
